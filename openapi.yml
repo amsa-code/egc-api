@@ -2,13 +2,66 @@ openapi: 3.0.0
 info:
   version: '0.1'
   title: EGC
-  description: API for EGC provides to accept broadcasts
+  
+  ## Note that Common Markdown is in theory supported for use in the OpenAPI 
+  ## v3 description fields. As many YAML editors are not aware of this we 
+  ## use the convention of not using # characters (headings in markdown) in
+  ## multi-line descriptions and instead just use **bolding**.
+  
+  description: | 
+    API for EGC provides to accept broadcasts
     
-## Note that Common Markdown is in theory supported for use in the OpenAPI 
-## v3 description fields. As many YAML editors are not aware of this we 
-## use the convention of not using # characters (headings in markdown) in
-## multi-line descriptions and instead just use **bolding**.
-
+    **Design considerations**
+    
+    *Two-phase send*
+        
+    Sending a new MSI is two-phase (create then send). This is
+    because the msiId value is a critical piece of information
+    for the client (to be able to check status and/or cancel)
+    and the API design must ensure that the client is safely 
+    in possession of msiID before a send happens. If the 
+    method was one phase then there would be no guarantee that
+    the msiID was received (a failure could happen in any link
+    in the networking chain like a router, firewall, proxy 
+    server or indeed a problem at the client application end
+    that prevented persistence of the msiID for later use).
+    Moreover, if the method was one phase and a failure in the
+    network chain occurred then not only would an orphan MSI 
+    be sent by the provider but the client would not have
+    knowledge that the MSI had been successfully queued for
+    sending and would naturally retry the send (multiple times
+    even) and we end up with the same MSI being sent 2+ times.
+    
+    To further clarify the problem being solved by a two phase
+    send here is a discussion of the delivery guarantees of HTTP 
+    responses, https://stackoverflow.com/questions/49444723/how-to-make-sure-the-http-response-was-delivered
+    
+    Note that a one phase call where the client generated a new 
+    unique id (using a UUID for instance) is a possible solution 
+    but is less desirable because it introduces a problematic 
+    edge case where the client accidentally uses the same id more
+    than once. To detect this synchronously (to throw an immediate
+    error) has scalability/availability consequences for the 
+    server side because a transactional resource must be used
+    (like a relational database) that can ensure single use of any 
+    msiId. If the server creates the msiId and communicates it to
+    the client then the server side can potentially be scaled with
+    ease if the msiID is a UUID for instance (which is effectively 
+    unique without coordination with other nodes).
+    
+    **Pagination**
+    
+    The List MSIs action uses a paginated response as the number of 
+    MSIs in a response can get large. Client-driven pagination is 
+    where the client specifies an offset (skip) field and that number
+    of rows is skipped by the server to return the next page. This
+    can be inefficient for the server-side (see 
+    https://use-the-index-luke.com/no-offset) and it is preferred to 
+    use server-driven pagination which is where each page returned 
+    also includes a continuation token to be included in the next page 
+    call. The nice thing about this approach is that the server side
+    can simply return an offset in the continuation token if desired.
+    
 paths:
   
   /msi:
@@ -59,42 +112,6 @@ paths:
         Requests that an existing unsent MSI be sent. If the MSI 
         has already been sent then nothing occurs (this method is
         idempotent). 
-        
-        **Design considerations**
-        
-        Sending a new MSI is two-phase (create then send). This is
-        because the msiId value is a critical piece of information
-        for the client (to be able to check status and/or cancel)
-        and the API design must ensure that the client is safely 
-        in possession of msgId before a send happens. If the 
-        method was one phase then there would be no guarantee that
-        the msgId was received (a failure could happen in any link
-        in the networking chain like a router, firewall, proxy 
-        server or indeed a problem at the client application end
-        that prevented persistence of the msgId for later use).
-        Moreover, if the method was one phase and a failure in the
-        network chain occurred then not only would an orphan MSI 
-        be sent by the provider but the client would not have
-        knowledge that the MSI had been successfully queued for
-        sending and would naturally retry the send (multiple times
-        even) and we end up with the same MSI being sent 2+ times.
-        
-        To further clarify the problem being solved by a two phase
-        send here is a discussion of the delivery guarantees of HTTP 
-        responses, https://stackoverflow.com/questions/49444723/how-to-make-sure-the-http-response-was-delivered
-        
-        Note that a one phase call where the client generated a new 
-        unique id (using a UUID for instance) is a possible solution 
-        but is less desirable because it introduces a problematic 
-        edge case where the client accidentally uses the same id more
-        than once. To detect this synchronously (to throw an immediate
-        error) has scalability/availability consequences for the 
-        server side because a transactional resource must be used
-        (like a relational database) that can ensure single use of any 
-        msiId. If the server creates the msgId and communicates it to
-        the client then the server side can potentially be scaled with
-        ease if the msgId is a UUID for instance (which is effectively 
-        unique without coordination with other nodes). 
       parameters:
         - $ref: '#/components/parameters/MsiId'
       responses:
@@ -111,12 +128,20 @@ paths:
      get:
       summary: |
         Returns Maritime Safety Information broadcasts requested to
-        be sent by the user. TODO should this include MSIs that have
-        been created but not sent?
+        be sent by the user. 
       description: |
         Note that none of the parameters are required and also that 
         just one of startTimeInclusive or endTimeExclusive can be 
         provided if desired.
+        
+        The limit field may not be honoured exactly by the server
+        side (in that it might exceed a maximum limit of the server).
+        
+        The results of this query may return in any order and that order
+        may vary in repeated calls (for example, the returned MSIs may 
+        not be ordered by timestamp). If the client requires an ordering
+        by time then all pages should be requested and then sorted 
+        client-side. TODO confirm this
       parameters:
         - in: query
           name: startTimeInclusive
@@ -140,35 +165,24 @@ paths:
           description: |
             Only MSIs that have a status in the given list
             are returned. If the list is empty (or the parameter
-            not present) then no filtering on status occurs.
+            is not present) then no filtering on status occurs.
           schema:
             type: array
             items:
               $ref: '#/components/schemas/Status'
-            
-        ## Server-driven pagination is preferrable (continuationToken
-        ## vs offset). Here's an RDB focused (but still relevant) 
-        ## discussion of why it's better to use server-driven 
-        ## pagination:
-        ## https://use-the-index-luke.com/no-offset.
-        ## The critical point to make is that if server-driven 
-        ## pagination is used it's up to the server if it wants 
-        ## to use offset style processing rather than index-based
-        ## processing (or something else entirely).
-        - in: query
-          name: continuationToken
-          schema:
-            type: string
-            minLength: 1
-            maxLength: 1024
-          description: TODO
         - in: query
           name: msiType
           schema:
             $ref:'#/components/schema/MsiType' 
           description: TODO
-        - $ref: '#/components/parameters/msiType'
-        - $ref: '#/components/parameters/status'
+        - in: query
+          name: continuationToken
+          schema:
+            $ref: '#/components/parameters/ContinuationToken' 
+          description: |
+            Describes to the server the starting point of 
+            the next page of results and is obtained from 
+            the current page. 
         ## review other fields 
       responses:
         '200':    
@@ -176,9 +190,14 @@ paths:
           content:
             application/json:
               schema: 
-                type: array
-                items: 
-                  $ref: '#/components/schemas/msi'
+                type: object
+                  properties:
+                    msis:
+                      type: array
+                      items: 
+                        $ref: '#/components/schemas/msi'
+                    continuationToken:
+                      
         '400':    
           $ref: '#/components/responses/BadRequest'
         '500':    
@@ -299,7 +318,7 @@ components:
     ## NationalSasID, not required
     Status:
       type: string
-      enum: [CREATED, SENT]
+      enum: [CREATED, SENDING, COMPLETED, CANCELLED]
     Payload:
       type: string
       minLength: 1
@@ -319,5 +338,9 @@ components:
           $ref: '#/components/schemas/MsiType'
         payload: 
           $ref: '#/components/schemas/Payload'
+    ContinuationToken:
+      type: string
+      minLength: 1
+      maxLength: 1024
           
         
