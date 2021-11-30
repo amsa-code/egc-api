@@ -1,9 +1,14 @@
 openapi: 3.0.0
 info:
-  version: '1.0'
+  version: '0.1'
   title: EGC
   description: API for EGC provides to accept broadcasts
     
+## Note that Common Markdown is in theory supported for use in the OpenAPI 
+## v3 description fields. As many YAML editors are not aware of this we 
+## use the convention of not using # characters (headings in markdown) in
+## multi-line descriptions and instead just use **bolding**.
+
 paths:
   
   /msi:
@@ -46,6 +51,12 @@ paths:
         has already been sent then nothing occurs (this method is
         idempotent). 
       description: |
+        Requests that an existing unsent MSI be sent. If the MSI 
+        has already been sent then nothing occurs (this method is
+        idempotent). 
+        
+        **Design considerations**
+        
         Sending a new MSI is two-phase (create then send). This is
         because the msiId value is a critical piece of information
         for the client (to be able to check status and/or cancel)
@@ -270,13 +281,27 @@ components:
       ## TODO
     ## TODO read acks, what are they!!!
     ## NationalSasID, not required
+    Status:
+      type: string
+      enum: [CREATED, SENT]
     Payload:
       type: string
       minLength: 1
       maxLength: 65535 ## TODO
+      description: C-codes at the moment. In the future this may be S-124 xml. 
     MsiContent:
       type: object
       properties:
         msiType: 
-          $ref: '#/components/schemas/MsiType'        
+          $ref: '#/components/schemas/MsiType'
+        payload: 
+          $ref: '#/components/schemas/Payload'  
+    Msi:
+      type: object
+      properties:
+        msiType: 
+          $ref: '#/components/schemas/MsiType'
+        payload: 
+          $ref: '#/components/schemas/Payload'
+          
         
