@@ -21,7 +21,12 @@ paths:
         Submits message content and returns an id that is
         to be used in the send method. 
       description: |
-        TODO
+        Submits message content and returns a unique id (across all 
+        users) that is to be used in the send method. It is ok for
+        a message to never be sent but the provider should have the 
+        ability to clean up (delete) unsent messages after some 
+        reasonable period (TODO ask providers what is reasonable
+        minimum period?).
       requestBody:
         description: TODO
         required: true
@@ -115,20 +120,31 @@ paths:
       parameters:
         - in: query
           name: startTimeInclusive
+          description: TODO
           schema:
             type: datetime
-          description: TODO
         - in: query
           name: endTimeExclusive
+          description: TODO
           schema:
             type: datetime
-          description: TODO
         - in: query
           name: limit
+          description: TODO
           schema:
             type: integer
             minimum: 1
             default: 10
+        - in: query
+          name: status
+          description: |
+            Only MSIs that have a status in the given list
+            are returned. If the list is empty (or the parameter
+            not present) then no filtering on status occurs.
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Status'
             
         ## Server-driven pagination is preferrable (continuationToken
         ## vs offset). Here's an RDB focused (but still relevant) 
