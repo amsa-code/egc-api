@@ -1,0 +1,215 @@
+openapi: 3.0.0
+info:
+  version: '1.0'
+  title: EGC
+  description: API for EGC provides to accept broadcasts
+    
+paths:
+  
+  /msi:
+  
+    ###############################################
+    ## Create an MSI
+    ###############################################      
+    post:
+      summary: |
+        Submits message content and returns an id that is to be used in the send method. 
+      description: |
+        TODO
+      requestBody:
+        description: TODO
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MsiContent'
+      responses:
+        '200':    
+          description: OK
+          content:
+            application/json:
+              schema: 
+                type: 
+                  $ref: '#/components/schema/MsiId' 
+        '400':    
+          $ref: '#/components/responses/BadRequest'
+        '500':    
+          $ref: '#/components/responses/ServerError'
+
+    ###############################################
+    ## List MSIs
+    ###############################################      
+     get:
+      summary: |
+        Returns Maritime Safety Information broadcasts requested to
+        be sent by the user. TODO should this include MSIs that have
+        been created but not sent?
+      description: |
+        TODO
+      parameters:
+        - in: query
+          name: startTimeInclusive
+          schema:
+            type: datetime
+          description: TODO
+        - in: query
+          name: endTimeExclusive
+          schema:
+            type: datetime
+          description: TODO
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            minimum: 1
+            default: 10
+        - in: query
+          name: offset
+          schema:
+            type: integer
+            minimum: 0
+          description: TODO
+        - in: query
+          name: msiType
+          schema:
+            $ref:'#/components/schema/MsiType' 
+          description: TODO
+        - $ref: '#/components/parameters/msiType'
+        - $ref: '#/components/parameters/status'
+        ## review other fields 
+      responses:
+        '200':    
+          description: OK
+          content:
+            application/json:
+              schema: 
+                type: array
+                items: 
+                  $ref: '#/components/schemas/msi'
+        '400':    
+          $ref: '#/components/responses/BadRequest'
+        '500':    
+          $ref: '#/components/responses/ServerError'
+          
+  ## REST convention is for this query to use a path parameter but 
+  ## if providers prefer we can switch this to be a query parameter
+  /msi/{id}:
+    ###############################################
+    ## Get an MSI
+    ############################################### 
+    get:
+      summary: Returns Maritime Safety Information broadcasts requested to be sent by the user
+      description: |
+        TODO
+      parameters:
+        - $ref: '#/components/parameters/MsiId'
+      responses:
+        '200':    
+          description: OK
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/msi'
+        '400':    
+          $ref: '#/components/responses/BadRequest'
+        '500':    
+          $ref: '#/components/responses/ServerError'
+
+    ###############################################
+    ## Cancel an MSI
+    ############################################### 
+    delete:
+      summary: Cancels an MSI broadcast 
+      description: |
+        This is a logical delete of a broadcast in that it
+        prevents future broadcasts happening for this msiId
+        (be it a single or repeating broadcast). Once cancelled
+        an MSI cannot be resent. However, the broadcast details 
+        are still available to be queried.
+      parameters:
+        - $ref: '#/components/parameters/MsiId'
+      responses:
+        '204':    
+          description: OK (No Content)
+        '400':    
+          $ref: '#/components/responses/BadRequest'
+        '500':    
+          $ref: '#/components/responses/ServerError'       
+                                   
+components:
+  parameters:
+    MsiId:
+      - in: path
+        name: id
+        schema:
+          $ref: '#/components/schemas/MsiId'
+        description: unique msi identifier
+        
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Unexpected error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+                      
+  schemas:
+    Error:
+      type: object
+      properties:
+        errorMessage: 
+          type: string
+        errorType:
+          type: string
+        stackTrace:
+          type: array
+          items: 
+            type: string
+        cause:
+          $ref: '#/components/schemas/Error'  
+    Msi:
+      type: object
+      properties:
+        id: 
+          $ref: '#/components/schemas/MsiId'
+          ## TODO add model
+    MsiId:
+      type: string
+      minLength: 1
+      maxLength: 255
+    MsiType:
+      type: string
+      enum: [MSI, SAR, MET]
+    AreaType: 
+      type: string
+      enum: [NAVMET, COASTAL, CIRCULAR, RECTANGULAR]
+    Address:
+      type: string
+      ## TODO
+    RepetitionCode:
+      type: string
+      ## TODO
+    Priority:
+      type: string
+      enum: [SAFETY, URGENCY]
+    ServiceCode:
+      type: string
+      ## TODO
+    ## TODO read acks, what are they!!!
+    ## NationalSasID, not required
+    Payload:
+      type: string
+      minLength: 1
+      maxLength: 65535 ## TODO
+    MsiContent:
+      type: object
+      properties:
+        msiType: 
+          $ref: '#/components/schemas/MsiType'        
+        
