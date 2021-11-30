@@ -42,7 +42,9 @@ paths:
     ###############################################      
     put:
       summary: |
-        Requests that an existing MSI be sent. 
+        Requests that an existing unsent MSI be sent. If the MSI 
+        has already been sent then nothing occurs (this method is
+        idempotent). 
       description: |
         Sending a new MSI is two-phase (create then send). This is
         because the msiId value is a critical piece of information
@@ -77,21 +79,11 @@ paths:
         the client then the server side can potentially be scaled with
         ease if the msgId is a UUID for instance (which is effectively 
         unique without coordination with other nodes). 
-      requestBody:
-        description: TODO
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MsiContent'
+      parameters:
+        - $ref: '#/components/parameters/MsiId'
       responses:
         '200':    
           description: OK
-          content:
-            application/json:
-              schema: 
-                type: 
-                  $ref: '#/components/schema/MsiId' 
         '400':    
           $ref: '#/components/responses/BadRequest'
         '500':    
@@ -106,7 +98,9 @@ paths:
         be sent by the user. TODO should this include MSIs that have
         been created but not sent?
       description: |
-        TODO
+        Note that none of the parameters are required and also that 
+        just one of startTimeInclusive or endTimeExclusive can be 
+        provided if desired.
       parameters:
         - in: query
           name: startTimeInclusive
@@ -124,11 +118,22 @@ paths:
             type: integer
             minimum: 1
             default: 10
+            
+        ## Server-driven pagination is preferrable (continuationToken
+        ## vs offset). Here's an RDB focused (but still relevant) 
+        ## discussion of why it's better to use server-driven 
+        ## pagination:
+        ## https://use-the-index-luke.com/no-offset.
+        ## The critical point to make is that if server-driven 
+        ## pagination is used it's up to the server if it wants 
+        ## to use offset style processing rather than index-based
+        ## processing (or something else entirely).
         - in: query
-          name: offset
+          name: continuationToken
           schema:
-            type: integer
-            minimum: 0
+            type: string
+            minLength: 1
+            maxLength: 1024
           description: TODO
         - in: query
           name: msiType
@@ -152,9 +157,9 @@ paths:
         '500':    
           $ref: '#/components/responses/ServerError'
           
-  ## REST convention is for this query to use a path parameter but 
-  ## if providers prefer we can switch this to be a query parameter
+  ## REST convention is for this query to use a path parameter
   /msi/{id}:
+  
     ###############################################
     ## Get an MSI
     ############################################### 
@@ -205,6 +210,7 @@ components:
         schema:
           $ref: '#/components/schemas/MsiId'
         description: unique msi identifier
+        required: true
         
   responses:
     BadRequest:
