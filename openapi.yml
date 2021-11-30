@@ -13,7 +13,8 @@ paths:
     ###############################################      
     post:
       summary: |
-        Submits message content and returns an id that is to be used in the send method. 
+        Submits message content and returns an id that is
+        to be used in the send method. 
       description: |
         TODO
       requestBody:
@@ -35,6 +36,55 @@ paths:
           $ref: '#/components/responses/BadRequest'
         '500':    
           $ref: '#/components/responses/ServerError'
+          
+    ###############################################
+    ## Send an MSI
+    ###############################################      
+    put:
+      summary: |
+        Requests that an existing MSI be sent. 
+      description: |
+        Sending a new MSI is two-phase (create then send). This is
+        because the msiId value is a critical piece of information
+        for the client (to be able to check status and/or cancel)
+        and the API design must ensure that the client is safely 
+        in possession of msgId before a send happens. If the 
+        method was one phase then there would be no guarantee that
+        the msgId was received (a failure could happen in any link
+        in the networking chain like a router, firewall, proxy 
+        server or indeed a problem at the client application end
+        that prevented persistence of the msgId for later use).
+        Moreover, if the method was one phase and a failure in the
+        network chain occurred then not only would an orphan MSI 
+        be sent by the provider but the client would not have
+        knowledge that the MSI had been successfully queued for
+        sending and would naturally retry the send (multiple times
+        even) and we end up with the same MSI being sent 2+ times.
+        
+        To further clarify the problem being solved by a two phase
+        send here is a discussion of the delivery guarantees of HTTP 
+        responses, https://stackoverflow.com/questions/49444723/how-to-make-sure-the-http-response-was-delivered
+        
+        
+      requestBody:
+        description: TODO
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MsiContent'
+      responses:
+        '200':    
+          description: OK
+          content:
+            application/json:
+              schema: 
+                type: 
+                  $ref: '#/components/schema/MsiId' 
+        '400':    
+          $ref: '#/components/responses/BadRequest'
+        '500':    
+          $ref: '#/components/responses/ServerError'       
 
     ###############################################
     ## List MSIs
