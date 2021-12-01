@@ -334,16 +334,11 @@ components:
     Status:
       type: string
       enum: [CREATED, SCHEDULED, ACTIVE, FINISHED, CANCELLED]
-    PayloadType:
-      type: string
-      enum: [C_CODES]
-      description: currently C_CODES only but a future version may include say S124_XML 
-      default: C_CODES
     Payload:
       type: string
       minLength: 1
       maxLength: 65535 ## TODO what max length is appropriate?
-      description: C-codes at the moment. In the future this may be S-124 xml. 
+      description: the IA5 message text to broadcast
     MsiContent:
       type: object
       properties:
@@ -366,8 +361,6 @@ components:
         serviceCode:
           $ref: '#/components/schemas/ServiceCode'
         ## TODO acks?
-        payloadType:
-          $ref: '#/components/schemas/PayloadType'
         payload: 
           $ref: '#/components/schemas/Payload'
       required: [areaType, address, repetitionCode, priority, serviceCode, payload] 
@@ -391,8 +384,6 @@ components:
         serviceCode:
           $ref: '#/components/schemas/ServiceCode'
         ## TODO acks?
-        payloadType:
-          $ref: '#/components/schemas/PayloadType'
         payload: 
           $ref: '#/components/schemas/Payload'
         status:
