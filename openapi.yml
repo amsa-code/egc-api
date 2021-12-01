@@ -115,6 +115,10 @@ paths:
                   $ref: '#/components/schema/MsiId' 
         '400':    
           $ref: '#/components/responses/BadRequest'
+        '401': 
+          $ref: '#/components/responses/Unauthorized'
+        '403': 
+          $ref: '#/components/responses/Forbidden'          
         '500':    
           $ref: '#/components/responses/ServerError'
           
@@ -137,6 +141,10 @@ paths:
           description: OK
         '400':    
           $ref: '#/components/responses/BadRequest'
+        '401': 
+          $ref: '#/components/responses/Unauthorized'
+        '403': 
+          $ref: '#/components/responses/Forbidden'          
         '500':    
           $ref: '#/components/responses/ServerError'       
 
@@ -219,6 +227,10 @@ paths:
                       
         '400':    
           $ref: '#/components/responses/BadRequest'
+        '401': 
+          $ref: '#/components/responses/Unauthorized'
+        '403': 
+          $ref: '#/components/responses/Forbidden'          
         '500':    
           $ref: '#/components/responses/ServerError'
           
@@ -242,6 +254,10 @@ paths:
                 $ref: '#/components/schemas/msi'
         '400':    
           $ref: '#/components/responses/BadRequest'
+        '401': 
+          $ref: '#/components/responses/Unauthorized'
+        '403': 
+          $ref: '#/components/responses/Forbidden'
         '500':    
           $ref: '#/components/responses/ServerError'
 
@@ -263,6 +279,10 @@ paths:
           description: OK (No Content)
         '400':    
           $ref: '#/components/responses/BadRequest'
+        '401': 
+          $ref: '#/components/responses/Unauthorized'
+        '403': 
+          $ref: '#/components/responses/Forbidden'          
         '500':    
           $ref: '#/components/responses/ServerError'       
                                    
@@ -283,6 +303,18 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized (must authenticate)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: Not allowed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'                        
     ServerError:
       description: Unexpected error
       content:
