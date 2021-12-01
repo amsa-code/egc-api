@@ -22,7 +22,7 @@ info:
     in possession of msiID before a send happens. If the 
     method was one phase then there would be no guarantee that
     the msiID was received (a failure could happen in any link
-    in the networking chain like a router, firewall, proxy 
+    in the return snetworking chain like a router, firewall, proxy 
     server or indeed a problem at the client application end
     that prevented persistence of the msiID for later use).
     Moreover, if the method was one phase and a failure in the
@@ -49,6 +49,9 @@ info:
     ease if the msiID is a UUID for instance (which is effectively 
     unique without coordination with other nodes).
     
+    Note also that to support two-phase send an additional status
+    value has been added, `CREATED`.
+    
     **Pagination**
     
     The List MSIs action uses a paginated response as the number of 
@@ -60,7 +63,8 @@ info:
     use server-driven pagination which is where each page returned 
     also includes a continuation token to be included in the next page 
     call. The nice thing about this approach is that the server side
-    can simply return an offset in the continuation token if desired.
+    can simply return an offset in the continuation token if desired but 
+    we enable more efficient techniques if wanted later.
     
 paths:
   
@@ -79,7 +83,7 @@ paths:
         a message to never be sent but the provider should have the 
         ability to clean up (delete) unsent messages after some 
         reasonable period (TODO ask providers what is reasonable
-        minimum period?).
+        minimum period so it can be documented here).
       requestBody:
         description: TODO
         required: true
@@ -166,6 +170,7 @@ paths:
             Only MSIs that have a status in the given list
             are returned. If the list is empty (or the parameter
             is not present) then no filtering on status occurs.
+            TODO support multi-status filtering or just one?
           schema:
             type: array
             items:
@@ -318,7 +323,7 @@ components:
     ## NationalSasID, not required
     Status:
       type: string
-      enum: [CREATED, SENDING, COMPLETED, CANCELLED]
+      enum: [CREATED, SCHEDULED, ACTIVE, FINISHED, CANCELLED]
     Payload:
       type: string
       minLength: 1
