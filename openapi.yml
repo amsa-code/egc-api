@@ -1,7 +1,9 @@
 openapi: 3.0.0
 info:
-  version: '0.1'
-  title: EGC
+    
+  version: '1.0-alpha'
+
+  title: EGC API
   
   ## Note that Common Markdown is in theory supported for use in the OpenAPI 
   ## v3 description fields. As many YAML editors are not aware of this we 
@@ -9,7 +11,7 @@ info:
   ## multi-line descriptions and instead just use **bolding**.
   
   description: | 
-    API for EGC provides to accept broadcasts
+    API for EGC provides to accept and manage broadcasts
     
     **Design considerations**
     
@@ -34,7 +36,8 @@ info:
     
     To further clarify the problem being solved by a two phase
     send here is a discussion of the delivery guarantees of HTTP 
-    responses, https://stackoverflow.com/questions/49444723/how-to-make-sure-the-http-response-was-delivered
+    responses, 
+    https://stackoverflow.com/questions/49444723/how-to-make-sure-the-http-response-was-delivered.
     
     Note that a one phase call where the client generated a new 
     unique id (using a UUID for instance) is a possible solution 
@@ -208,7 +211,6 @@ paths:
         '500':    
           $ref: '#/components/responses/ServerError'
           
-  ## REST convention is for this query to use a path parameter
   /msi/{id}:
   
     ###############################################
@@ -324,6 +326,11 @@ components:
     Status:
       type: string
       enum: [CREATED, SCHEDULED, ACTIVE, FINISHED, CANCELLED]
+    PayloadType:
+      type: string
+      enum: [C_CODES]
+      description: currently C_CODES only but a future version may include say S124_XML 
+      default: C_CODES
     Payload:
       type: string
       minLength: 1
@@ -332,8 +339,25 @@ components:
     MsiContent:
       type: object
       properties:
+        areaType:
+          $ref: '#/components/schemas/AreaType'
+        address:
+          $ref: '#/components/schemas/Address'
         msiType: 
           $ref: '#/components/schemas/MsiType'
+        startDate:
+          type: datetime
+        endDate:
+          type: datetime
+        repetitionCode:
+          $ref: '#/components/schemas/RepetitionCode'
+        priority:
+          $ref: '#/components/schemas/Priority'
+        serviceCode:
+          $ref: '#/components/schemas/ServiceCode'
+        ## TODO acks?
+        payloadType:
+          $ref: '#/components/schemas/PayloadType'
         payload: 
           $ref: '#/components/schemas/Payload'  
     Msi:
@@ -347,5 +371,3 @@ components:
       type: string
       minLength: 1
       maxLength: 1024
-          
-        
