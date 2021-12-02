@@ -451,6 +451,10 @@ components:
           format: float
           exclusiveMinimum: 0
           maximum: 360
+    Geometry:
+      oneOf:
+      - $ref: '#/components/schemas/Rectangle'
+      - $ref: '#/components/schemas/Circle'
     ContinuationToken:
       type: string
       minLength: 1
