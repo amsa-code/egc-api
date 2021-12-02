@@ -434,6 +434,7 @@ components:
         radiusNm:
           type: number
           format: float
+      required: [lat, lon, radiusNm]
     Rectangle:
       type: object
       properties: 
@@ -451,14 +452,18 @@ components:
           format: float
           exclusiveMinimum: 0
           maximum: 360
+      required: [minLat, leftLon, heightDegrees, widthDegrees]          
     Geometry:
       oneOf:
       - $ref: '#/components/schemas/Rectangle'
       - $ref: '#/components/schemas/Circle'
-    SearchAndRescueArea:
-      oneOf:
-      - $ref: '#/components/schemas/Geometry'
-      - $ref: '#/components/schemas/Geometry'      
+      discriminator:
+        propertyName: geometryType
+    SearchAndRescueBroadcast:
+      type: object
+      properties: 
+        geometry:
+          $ref: '#/components/schemas/Geometry' 
     ContinuationToken:
       type: string
       minLength: 1
