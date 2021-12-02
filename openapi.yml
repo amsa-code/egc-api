@@ -414,6 +414,43 @@ components:
           $ref: '#/components/schemas/Payload'
         status:
           $ref: '#/components/schemas/Status' 
+    Latitude:
+      type: number
+      format: float
+      minimum: -90
+      maximum: 90
+    Longitude:
+      type: number
+      format: float
+      minimum: -180
+      maximum: 180
+    Circle:
+      type: object
+      properties:
+        lat:
+          $ref: '#/components/schemas/Latitude' 
+        lon:
+          $ref: '#/components/schemas/Longitude' 
+        radiusNm:
+          type: number
+          format: float
+    Rectangle:
+      type: object
+      properties: 
+        minLat: 
+          $ref: '#/components/schemas/Latitude'
+        leftLon: 
+          $ref: '#/components/schemas/Longitude' 
+        heightDegrees:
+          type: number
+          format: float
+          exclusiveMinimum: 0
+          maximum: 180
+        widthDegrees:
+          type: number
+          format: float
+          exclusiveMinimum: 0
+          maximum: 360
     ContinuationToken:
       type: string
       minLength: 1
