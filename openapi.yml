@@ -455,6 +455,10 @@ components:
       oneOf:
       - $ref: '#/components/schemas/Rectangle'
       - $ref: '#/components/schemas/Circle'
+    SearchAndRescueArea:
+      oneOf:
+      - $ref: '#/components/schemas/Geometry'
+      - $ref: '#/components/schemas/Geometry'      
     ContinuationToken:
       type: string
       minLength: 1

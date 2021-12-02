@@ -1,6 +1,6 @@
 @startuml
 
-title Broadcasts - Class Diagram
+title MSI Broadcasts - Class Diagram
 
 class Broadcast {
   id: string
@@ -42,17 +42,15 @@ enum IntervalHours {
   120
 }
 
-interface Count 
-class Once <<Singleton>> 
+interface Repetition 
 class Twice
-class Repeating
+class RepeatTillCancelled
 
-Broadcast -- "1" Count
-Count <|-- Once
-Count <|-- Twice
-Count <|-- Repeating
-Twice "*" -- "1" IntervalHours
-Repeating "*" -- "1" IntervalHours
+Broadcast -- "0..1" Repetition
+Repetition <|-- Twice
+Repetition <|-- RepeatTillCancelled
+Twice -- "1" IntervalHours
+RepeatTillCancelled  -- "1" IntervalHours
 
 class MetArea {
   metAreaNo: integer
@@ -75,10 +73,8 @@ class Rectangle {
   widthDegrees: decimal
 }
 interface Geometry
-class All <<Singleton>>
 interface NavWarningArea
 interface MeteorologicalArea
-interface SearchAndRescueArea
 interface PiracyArea
 
 Geometry <|-- Circle
@@ -92,9 +88,6 @@ MeteorologicalArea <|-- Geometry
 MeteorologicalArea <|-- CoastalWarningArea
 MeteorologicalArea <|-- MetArea
 
-SearchAndRescueArea <|-- Geometry
-SearchAndRescueArea <|-- All
-
 PiracyArea <|-- Geometry
 PiracyArea <|-- CoastalWarningArea
 PiracyArea <|-- NavArea
@@ -104,12 +97,12 @@ Broadcast <|-- MetBroadcast
 Broadcast <|-- PiracyBroadcast
 Broadcast <|-- NavWarningBroadcast
 
-SARBroadcast  -- "1" SearchAndRescueArea
+SARBroadcast  -- "0..1" Geometry
 MetBroadcast  -- "1" MeteorologicalArea
 NavWarningBroadcast  -- "1" NavWarningArea
 PiracyBroadcast -- "1" PiracyArea
 
-Broadcast "*" -- "1" Priority
-Broadcast "*" -- "1" Status
+Broadcast -- "1" Priority
+Broadcast -- "1" Status
 
 @enduml
