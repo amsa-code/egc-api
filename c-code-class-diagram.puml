@@ -1,0 +1,115 @@
+@startuml
+
+title Broadcasts - Class Diagram
+
+class Broadcast {
+  id: string
+  send()
+  cancel()
+}
+class SARBroadcast
+class MetBroadcast
+class NavWarningBroadcast
+class PiracyBroadcast
+enum Priority {
+  SAFETY
+  URGENCY
+  DISTRESS
+}
+enum Status {
+  CREATED
+  SCHEDULED
+  ACTIVE
+  FINISHED
+  CANCELLED
+}
+enum IntervalHours {
+  1
+  2
+  3
+  4
+  5
+  6
+  12
+  18
+  24
+  30
+  36
+  48
+  60
+  72
+  96
+  120
+}
+
+interface Count 
+class Once <<Singleton>> 
+class Twice
+class Repeating
+
+Broadcast -- "1" Count
+Count <|-- Once
+Count <|-- Twice
+Count <|-- Repeating
+Twice "*" -- "1" IntervalHours
+Repeating "*" -- "1" IntervalHours
+
+class MetArea {
+  metAreaNo: integer
+}
+class NavArea {
+  navAreaNo: integer
+}
+class CoastalWarningArea {
+  letter: char
+}
+class Circle {
+  lat: decimal
+  lon: decimal
+  radiusNm: decimal
+}
+class Rectangle {
+  minLat: decimal
+  leftLon: decimal
+  heightDegrees: decimal
+  widthDegrees: decimal
+}
+interface Geometry
+class All <<Singleton>>
+interface NavWarningArea
+interface MeteorologicalArea
+interface SearchAndRescueArea
+interface PiracyArea
+
+Geometry <|-- Circle
+Geometry <|-- Rectangle
+
+NavWarningArea <|-- NavArea
+NavWarningArea <|-- CoastalWarningArea
+NavWarningArea <|-- Geometry
+
+MeteorologicalArea <|-- Geometry
+MeteorologicalArea <|-- CoastalWarningArea
+MeteorologicalArea <|-- MetArea
+
+SearchAndRescueArea <|-- Geometry
+SearchAndRescueArea <|-- All
+
+PiracyArea <|-- Geometry
+PiracyArea <|-- CoastalWarningArea
+PiracyArea <|-- NavArea
+
+Broadcast <|-- SARBroadcast
+Broadcast <|-- MetBroadcast
+Broadcast <|-- PiracyBroadcast
+Broadcast <|-- NavWarningBroadcast
+
+SARBroadcast  -- "1" SearchAndRescueArea
+MetBroadcast  -- "1" MeteorologicalArea
+NavWarningBroadcast  -- "1" NavWarningArea
+PiracyBroadcast -- "1" PiracyArea
+
+Broadcast "*" -- "1" Priority
+Broadcast "*" -- "1" Status
+
+@enduml
