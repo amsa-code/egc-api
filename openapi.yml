@@ -498,6 +498,21 @@ components:
       - $ref: '#/components/schemas/CoastalWarningArea'      
       discriminator:
         propertyName: piracyAreaType
+    Repetition:
+      type: object
+      properties:
+        repeatTillCancelled: 
+          type: boolean
+          description: |
+            if false then one repetition is made (that
+            is the broadcast happens twice)
+        intervalHours: 
+          $ref: '#/components/schemas/IntervalHours'      
+    IntervalHours:
+      type: integer
+      enum: [1,2,3,4,5,6,12,18,24,30,36,48,60,72,96,120]  
+      description: |
+        the time gap between broadcast repeats    
     ContinuationToken:
       type: string
       minLength: 1
