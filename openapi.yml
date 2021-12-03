@@ -340,18 +340,6 @@ components:
       type: string
       minLength: 1
       maxLength: 255
-    MsiType:
-      type: string
-      enum: [MSI, SAR, MET]
-    AreaType: 
-      type: string
-      enum: [NAVMET, COASTAL, CIRCULAR, RECTANGULAR]
-    Address:
-      type: string
-      ## TODO
-    RepetitionCode:
-      type: string
-      ## TODO
     Priority:
       type: string
       enum: [SAFETY, URGENCY, DISTRESS]
@@ -441,7 +429,7 @@ components:
     Msi:
       type: object
       description: |
-        Represents a created MMSI.
+        Represents a created MMSI (with an identifier).
         
         `repetition` is optional. If omitted once only is assumed
         (no repetition). `startDateInclusive` and `endDateExclusive`
@@ -503,6 +491,18 @@ components:
       - $ref: '#/components/schemas/CoastalWarningArea'      
       discriminator:
         propertyName: piracyAreaType
+    NavArea:
+      properties: 
+        navAreaCode:
+          type: integer
+          minimum: TODO
+          maximum: TODO
+    MetArea:
+      properties: 
+        metAreaCode:
+          type: integer
+          minimum: TODO
+          maximum: TODO          
     Repetition:
       type: object
       properties:
