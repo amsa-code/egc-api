@@ -366,54 +366,7 @@ components:
       maxLength: 65535 ## TODO what max length is appropriate?
       description: the IA5 message text to broadcast
     MsiContent:
-      type: object
-      properties:
-        areaType:
-          $ref: '#/components/schemas/AreaType'
-        address:
-          $ref: '#/components/schemas/Address'
-        msiType: 
-          $ref: '#/components/schemas/MsiType'
-        startDate:
-          type: datetime
-          description: defaults to now if not present
-        endDate:
-          type: datetime
-          description: defaults to now + 7 days if not present
-        repetitionCode:
-          $ref: '#/components/schemas/RepetitionCode'
-        priority:
-          $ref: '#/components/schemas/Priority'
-        serviceCode:
-          $ref: '#/components/schemas/ServiceCode'
-        ## TODO acks?
-        payload: 
-          $ref: '#/components/schemas/Payload'
       required: [areaType, address, repetitionCode, priority, serviceCode, payload] 
-    Msi:
-      type: object
-      properties:
-        areaType:
-          $ref: '#/components/schemas/AreaType'
-        address:
-          $ref: '#/components/schemas/Address'
-        msiType: 
-          $ref: '#/components/schemas/MsiType'
-        startDate:
-          type: datetime
-        endDate:
-          type: datetime
-        repetitionCode:
-          $ref: '#/components/schemas/RepetitionCode'
-        priority:
-          $ref: '#/components/schemas/Priority'
-        serviceCode:
-          $ref: '#/components/schemas/ServiceCode'
-        ## TODO acks?
-        payload: 
-          $ref: '#/components/schemas/Payload'
-        status:
-          $ref: '#/components/schemas/Status' 
     Latitude:
       type: number
       format: float
@@ -459,24 +412,32 @@ components:
       - $ref: '#/components/schemas/Circle'
       discriminator:
         propertyName: geometryType
-    Broadcast:
+    Msi:
       type: object
+      description: |
+        repetition is optional. If omitted once only is assumed
+        (no repetition). startDateInclusive and endDateExclusive
+        are optional fields and 0, 1 or both can be present.
       properties:
         broadcast:
-	    oneOf:
-        - $ref: '#/components/schemas/SeachAndRescueBroadcast'
-        - $ref: '#/components/schemas/MetBroadcast'
-        - $ref: '#/components/schemas/NavWarningBroadcast'
-        - $ref: '#/components/schemas/PiracyBroadcast'
-        discriminator:
-         propertyName: broadcastType
+          oneOf:
+          - $ref: '#/components/schemas/SeachAndRescueBroadcast'
+          - $ref: '#/components/schemas/MetBroadcast'
+          - $ref: '#/components/schemas/NavWarningBroadcast'
+          - $ref: '#/components/schemas/PiracyBroadcast'
+          discriminator:
+            propertyName: broadcastType
+        startDateInclusive:
+          type: datetime
+        endDateExclusive:
+          type: datetime
         priority:
           $ref: '#/components/schemas/Priority'
         status:
           $ref: '#/components/schemas/Status'   
-        ## repetition is optional. If omitted then once only is assumed (no repetition).
         repetition:
           $ref: '#/components/schemas/Repetition' 
+        ## repetition is optional
         required: [broadcast, priority, status]
     SearchAndRescueBroadcast:
       type: object
@@ -492,22 +453,22 @@ components:
         area:
           $ref: '#/components/schemas/MeteorologicalArea' 
     MeteorologicalArea:
-	  oneOf:
-	  - $ref: '#/components/schemas/Geometry'
+      oneOf:
+      - $ref: '#/components/schemas/Geometry'
       - $ref: '#/components/schemas/MetArea'
       - $ref: '#/components/schemas/CoastalWarningArea'
       discriminator:
         propertyName: meterologicalAreaType
     NavWarningArea:
-	  oneOf:
-	  - $ref: '#/components/schemas/Geometry'
+      oneOf:
+      - $ref: '#/components/schemas/Geometry'
       - $ref: '#/components/schemas/NavArea'
       - $ref: '#/components/schemas/CoastalWarningArea'
       discriminator:
         propertyName: navWarningAreaType      
     PiracyArea:
-	  oneOf:
-	  - $ref: '#/components/schemas/Geometry'
+      oneOf:
+      - $ref: '#/components/schemas/Geometry'
       - $ref: '#/components/schemas/NavArea'
       - $ref: '#/components/schemas/CoastalWarningArea'      
       discriminator:
@@ -521,12 +482,11 @@ components:
             if false then one repetition is made (that
             is the broadcast happens twice)
         intervalHours: 
-          $ref: '#/components/schemas/IntervalHours'      
-    IntervalHours:
-      type: integer
-      enum: [1,2,3,4,5,6,12,18,24,30,36,48,60,72,96,120]  
-      description: |
-        the time gap between broadcast repeats    
+          type: integer
+          enum: [1,2,3,4,5,6,12,18,24,30,36,48,60,72,96,120]  
+          description: |
+            the time gap between broadcast repeats   
+      required: [repeatTillCancelled, intervalHours] 
     ContinuationToken:
       type: string
       minLength: 1

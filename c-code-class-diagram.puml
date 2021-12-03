@@ -5,6 +5,8 @@ title MSI Broadcasts - Class Diagram
 class Broadcast {
   id: string
   payload: string
+  startDateInclusive: timestamp
+  endDateExclusive: timestamp
   send()
   cancel()
 }
