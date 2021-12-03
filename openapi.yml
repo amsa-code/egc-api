@@ -482,7 +482,22 @@ components:
 	  - $ref: '#/components/schemas/Geometry'
       - $ref: '#/components/schemas/MetArea'
       - $ref: '#/components/schemas/CoastalWarningArea'
-      
+      discriminator:
+        propertyName: meterologicalAreaType
+    NavWarningArea:
+	  oneOf:
+	  - $ref: '#/components/schemas/Geometry'
+      - $ref: '#/components/schemas/NavArea'
+      - $ref: '#/components/schemas/CoastalWarningArea'
+      discriminator:
+        propertyName: navWarningAreaType      
+    PiracyArea:
+	  oneOf:
+	  - $ref: '#/components/schemas/Geometry'
+      - $ref: '#/components/schemas/NavArea'
+      - $ref: '#/components/schemas/CoastalWarningArea'      
+      discriminator:
+        propertyName: piracyAreaType
     ContinuationToken:
       type: string
       minLength: 1
