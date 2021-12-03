@@ -460,16 +460,22 @@ components:
       discriminator:
         propertyName: geometryType
     Broadcast:
-      oneOf:
-      - $ref: '#/components/schemas/SeachAndRescueBroadcast'
-      - $ref: '#/components/schemas/MetBroadcast'
-      - $ref: '#/components/schemas/NavWarningBroadcast'
-      - $ref: '#/components/schemas/PiracyBroadcast'
-      discriminator:
-        propertyName: broadcastType
+      broadcast:
+		oneOf:
+		- $ref: '#/components/schemas/SeachAndRescueBroadcast'
+		- $ref: '#/components/schemas/MetBroadcast'
+		- $ref: '#/components/schemas/NavWarningBroadcast'
+		- $ref: '#/components/schemas/PiracyBroadcast'
+        discriminator:
+          propertyName: broadcastType
+      repetition:
+        $ref: '#/components/schemas/Repetition' 
+      required: [broadcast]
     SearchAndRescueBroadcast:
       type: object
       properties: 
+        ## geometry is optional 
+        ## if omitted then corresponds to entire coverage area
         geometry:
           $ref: '#/components/schemas/Geometry' 
     MetBroadcast:

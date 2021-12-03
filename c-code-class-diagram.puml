@@ -4,6 +4,7 @@ title MSI Broadcasts - Class Diagram
 
 class Broadcast {
   id: string
+  payload: string
   send()
   cancel()
 }
