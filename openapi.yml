@@ -365,8 +365,6 @@ components:
       minLength: 1
       maxLength: 65535 ## TODO what max length is appropriate?
       description: the IA5 message text to broadcast
-    MsiContent:
-      required: [areaType, address, repetitionCode, priority, serviceCode, payload] 
     Latitude:
       type: number
       format: float
@@ -412,12 +410,13 @@ components:
       - $ref: '#/components/schemas/Circle'
       discriminator:
         propertyName: geometryType
-    Msi:
+    MsiContent:
       type: object
       description: |
-        repetition is optional. If omitted once only is assumed
-        (no repetition). startDateInclusive and endDateExclusive
-        are optional fields and 0, 1 or both can be present.
+        Used to create a new MSI. `repetition` is optional. If omitted
+        once only is assumed (no repetition). `startDateInclusive` and
+        `endDateExclusive` are optional fields and 0, 1 or both can be
+        present.
       properties:
         broadcast:
           oneOf:
@@ -439,6 +438,37 @@ components:
           $ref: '#/components/schemas/Repetition' 
         ## repetition is optional
         required: [broadcast, priority, status]
+    Msi:
+      type: object
+      description: |
+        Represents a created MMSI.
+        
+        `repetition` is optional. If omitted once only is assumed
+        (no repetition). `startDateInclusive` and `endDateExclusive`
+        are optional fields and 0, 1 or both can be present.
+      properties:
+        id: 
+          $ref: '#/components/schemas/MsiId'
+        broadcast:
+          oneOf:
+          - $ref: '#/components/schemas/SeachAndRescueBroadcast'
+          - $ref: '#/components/schemas/MetBroadcast'
+          - $ref: '#/components/schemas/NavWarningBroadcast'
+          - $ref: '#/components/schemas/PiracyBroadcast'
+          discriminator:
+            propertyName: broadcastType
+        startDateInclusive:
+          type: datetime
+        endDateExclusive:
+          type: datetime
+        priority:
+          $ref: '#/components/schemas/Priority'
+        status:
+          $ref: '#/components/schemas/Status'   
+        repetition:
+          $ref: '#/components/schemas/Repetition' 
+        ## repetition is optional
+        required: [id, broadcast, priority, status]
     SearchAndRescueBroadcast:
       type: object
       description: |
