@@ -2,7 +2,7 @@
 
 title MSI Broadcasts - Class Diagram
 
-class Broadcast {
+class MSI {
   id: string
   payload: string
   startDateInclusive: timestamp
@@ -13,7 +13,7 @@ class Broadcast {
 class SARBroadcast
 class MetBroadcast
 class NavWarningBroadcast
-class PiracyBroadcast
+
 enum Priority {
   SAFETY
   URGENCY
@@ -49,7 +49,7 @@ interface Repetition
 class Twice
 class RepeatTillCancelled
 
-Broadcast -- "0..1" Repetition
+MSI -- "0..1" Repetition
 Repetition <|-- Twice
 Repetition <|-- RepeatTillCancelled
 Twice -- "1" IntervalHours
@@ -64,6 +64,9 @@ class NavArea {
 class CoastalWarningArea {
   letter: char
 }
+
+interface SARBroadcastArea
+
 class Circle {
   lat: decimal
   lon: decimal
@@ -78,7 +81,6 @@ class Rectangle {
 interface Geometry
 interface NavWarningArea
 interface MeteorologicalArea
-interface PiracyArea
 
 Geometry <|-- Circle
 Geometry <|-- Rectangle
@@ -91,21 +93,18 @@ MeteorologicalArea <|-- Geometry
 MeteorologicalArea <|-- CoastalWarningArea
 MeteorologicalArea <|-- MetArea
 
-PiracyArea <|-- Geometry
-PiracyArea <|-- CoastalWarningArea
-PiracyArea <|-- NavArea
+SARBroadcastArea <|-- Geometry
+SARBroadcastArea <|-- NavArea
 
-Broadcast <|-- SARBroadcast
-Broadcast <|-- MetBroadcast
-Broadcast <|-- PiracyBroadcast
-Broadcast <|-- NavWarningBroadcast
+MSI <|-- SARBroadcast
+MSI <|-- MetBroadcast
+MSI <|-- NavWarningBroadcast
 
-SARBroadcast  -- "0..1" Geometry
+SARBroadcast  -- "0..1" SARBroadcastArea
 MetBroadcast  -- "1" MeteorologicalArea
 NavWarningBroadcast  -- "1" NavWarningArea
-PiracyBroadcast -- "1" PiracyArea
 
-Broadcast -- "1" Priority
-Broadcast -- "1" Status
+MSI -- "1" Priority
+MSI -- "1" Status
 
 @enduml
