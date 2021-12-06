@@ -5,8 +5,8 @@ title MSI Broadcasts - Class Diagram
 class MSI {
   id: string
   payload: string
-  startDateInclusive: timestamp
-  endDateExclusive: timestamp
+  startDate: timestamp
+  endDate: timestamp
   send()
   cancel()
 }
@@ -46,13 +46,13 @@ enum IntervalHours {
 }
 
 interface Repetition 
-class Twice
+class OneRepeat
 class RepeatTillCancelled
 
 MSI -- "0..1" Repetition
-Repetition <|-- Twice
+Repetition <|-- RepeatOnce
 Repetition <|-- RepeatTillCancelled
-Twice -- "1" IntervalHours
+RepeatOnce -- "1" IntervalHours
 RepeatTillCancelled  -- "1" IntervalHours
 
 class MetArea {
