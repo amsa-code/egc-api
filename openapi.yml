@@ -128,8 +128,7 @@ paths:
           content:
             application/json:
               schema: 
-                type: 
-                  $ref: '#/components/schemas/MsiId' 
+                $ref: '#/components/schemas/MsiId' 
         '400':    
           $ref: '#/components/responses/BadRequest'
         '401': 
@@ -139,32 +138,6 @@ paths:
         '500':    
           $ref: '#/components/responses/ServerError'
           
-    ###############################################
-    ## Send an MSI
-    ###############################################      
-    put:
-      summary: |
-        Requests that an existing unsent MSI be sent. If the MSI 
-        has already been sent then nothing occurs (this method is
-        idempotent). 
-      description: |
-        Requests that an existing unsent MSI be sent. If the MSI 
-        has already been sent then nothing occurs (this method is
-        idempotent). 
-      parameters:
-        - $ref: '#/components/parameters/MsiId'
-      responses:
-        '200':    
-          description: OK
-        '400':    
-          $ref: '#/components/responses/BadRequest'
-        '401': 
-          $ref: '#/components/responses/Unauthorized'
-        '403': 
-          $ref: '#/components/responses/Forbidden'          
-        '500':    
-          $ref: '#/components/responses/ServerError'       
-
     ###############################################
     ## List MSIs
     ###############################################      
@@ -190,12 +163,14 @@ paths:
           name: startTimeInclusive
           description: TODO
           schema:
-            type: datetime
+            type: string
+            format: datetime
         - in: query
           name: endTimeExclusive
           description: TODO
           schema:
-            type: datetime
+            type: string
+            format: datetime
         - in: query
           name: limit
           description: TODO
@@ -217,7 +192,7 @@ paths:
         - in: query
           name: msiType
           schema:
-            $ref:'#/components/schemas/MsiType' 
+            $ref: '#/components/schemas/MsiType' 
           description: TODO
         - in: query
           name: continuationToken
@@ -253,7 +228,9 @@ paths:
           $ref: '#/components/responses/ServerError'
           
   /msi/{id}:
-  
+    parameters:
+      - $ref: '#/components/parameters/MsiId'
+    
     ###############################################
     ## Get an MSI
     ############################################### 
@@ -261,8 +238,6 @@ paths:
       summary: Returns Maritime Safety Information broadcasts requested to be sent by the user
       description: |
         TODO
-      parameters:
-        - $ref: '#/components/parameters/MsiId'
       responses:
         '200':    
           description: OK
@@ -280,6 +255,30 @@ paths:
           $ref: '#/components/responses/ServerError'
 
     ###############################################
+    ## Send an MSI
+    ###############################################      
+    put:
+      summary: |
+        Requests that an existing unsent MSI be sent. If the MSI 
+        has already been sent then nothing occurs (this method is
+        idempotent). 
+      description: |
+        Requests that an existing unsent MSI be sent. If the MSI 
+        has already been sent then nothing occurs (this method is
+        idempotent). 
+      responses:
+        '200':    
+          description: OK
+        '400':    
+          $ref: '#/components/responses/BadRequest'
+        '401': 
+          $ref: '#/components/responses/Unauthorized'
+        '403': 
+          $ref: '#/components/responses/Forbidden'          
+        '500':    
+          $ref: '#/components/responses/ServerError'              
+
+    ###############################################
     ## Cancel an MSI
     ############################################### 
     delete:
@@ -290,8 +289,6 @@ paths:
         (be it a single or repeating broadcast). Once cancelled
         an MSI cannot be resent. However, the broadcast details 
         are still available to be queried.
-      parameters:
-        - $ref: '#/components/parameters/MsiId'
       responses:
         '204':    
           description: OK (No Content)
@@ -413,12 +410,14 @@ components:
         heightDegrees:
           type: number
           format: float
-          exclusiveMinimum: 0
+          minimum: 0
+          exclusiveMinimum: true
           maximum: 180
         widthDegrees:
           type: number
           format: float
-          exclusiveMinimum: 0
+          minimum: 0
+          exclusiveMinimum: true
           maximum: 360
       required: [minLat, leftLon, heightDegrees, widthDegrees]
                 
@@ -445,10 +444,12 @@ components:
           discriminator:
             propertyName: msiType
         startDate:
-          type: datetime
+          type: string
+          format: datetime
           description: TODO what happens if missing
         endDate:
-          type: datetime
+          type: string
+          format: datetime
           description: TODO what happens if missing
         priority:
           $ref: '#/components/schemas/Priority'
@@ -478,9 +479,11 @@ components:
           discriminator:
             propertyName: broadcastType
         startDate:
-          type: datetime
+          type: string
+          format: datetime
         endDate:
-          type: datetime
+          type: string
+          format: datetime
         priority:
           $ref: '#/components/schemas/Priority'
         status:
