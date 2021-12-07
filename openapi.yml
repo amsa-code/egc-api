@@ -35,9 +35,8 @@ info:
     even) and we end up with the same MSI being sent 2+ times.
     
     To further clarify the problem being solved by a two phase
-    send here is a discussion of the delivery guarantees of HTTP 
-    responses, 
-    https://stackoverflow.com/questions/49444723/how-to-make-sure-the-http-response-was-delivered.
+    send here is a [discussion](https://stackoverflow.com/questions/49444723/how-to-make-sure-the-http-response-was-delivered) 
+    of the delivery guarantees of HTTP responses. 
     
     Note that a one phase call where the client generated a new 
     unique id (using a UUID for instance) is a possible solution 
