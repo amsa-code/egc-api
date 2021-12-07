@@ -91,6 +91,12 @@ info:
     broadcast? If so the we should add a `isPiracyWarning` boolean field to 
     the NavBroadcast.
     
+    **Geometry**
+    Note that the api below allows for float precision locations for 
+    geographic circles and rectangles. An implementation of this API 
+    may choose to use the location with reduced precision (for example
+    lat longs rounded to nearest integer).
+    
 paths:
   
   /msi:
@@ -220,8 +226,9 @@ paths:
           description: |
             Describes to the server the starting point of 
             the next page of results and is obtained from 
-            the current page. 
-        ## review other fields 
+            the current page. May contain an offset is desired
+            but is at the discretion of implementer.
+        ## review other fields, acks etc.
       responses:
         '200':    
           description: OK
@@ -437,10 +444,12 @@ components:
           - $ref: '#/components/schemas/NavBroadcast'
           discriminator:
             propertyName: msiType
-        startDateInclusive:
+        startDate:
           type: datetime
-        endDateExclusive:
+          description: TODO what happens if missing
+        endDate:
           type: datetime
+          description: TODO what happens if missing
         priority:
           $ref: '#/components/schemas/Priority'
         status:
@@ -468,9 +477,9 @@ components:
           - $ref: '#/components/schemas/NavBroadcast'
           discriminator:
             propertyName: broadcastType
-        startDateInclusive:
+        startDate:
           type: datetime
-        endDateExclusive:
+        endDate:
           type: datetime
         priority:
           $ref: '#/components/schemas/Priority'
@@ -479,7 +488,7 @@ components:
         repetition:
           $ref: '#/components/schemas/Repetition' 
         ## repetition is optional
-        required: [id, broadcast, priority, status]
+        required: [id, broadcast, startDate, endDate, priority, status]
         
     SARBroadcast:
       type: object
@@ -495,7 +504,7 @@ components:
       - $ref: '#/components/schemas/Geometry'
       - $ref: '#/components/schemas/NavArea'
       discriminator:
-        propertyName: sarAreaType
+        propertyName: sarBroadcastAreaType
          
     MetBroadcast:
       type: object
@@ -510,7 +519,16 @@ components:
       - $ref: '#/components/schemas/MetArea'
       - $ref: '#/components/schemas/CoastalWarningArea'
       discriminator:
-        propertyName: meterologicalAreaType
+        propertyName: metBroadcastAreaType
+        
+    NavBroadcast:
+      type: object
+      properties:
+        area:
+          $ref: '#/components/schemas/NavBroadcastArea' 
+        isPiracyWarning:
+          type: boolean
+      required: [area, isPiracyWarning]        
         
     NavBroadcastArea:
       oneOf:
@@ -518,14 +536,18 @@ components:
       - $ref: '#/components/schemas/NavArea'
       - $ref: '#/components/schemas/CoastalWarningArea'
       discriminator:
-        propertyName: navWarningAreaType
+        propertyName: navBroadcastAreaType
               
     NavArea:
       properties: 
         navAreaCode:
-          type: integer
-          minimum: 1
-          maximum: 21
+          $ref: '#/components/schemas/NavAreaCode'
+      required: [navAreaCode] 
+          
+    NavAreaCode:
+      type: integer
+      minimum: 1
+      maximum: 21
           
     MetArea:
       properties: 
@@ -533,12 +555,39 @@ components:
           type: integer
           minimum: 1
           maximum: 21
+      required: [metAreaCode]
           
     CoastalWarningArea:
       properties: 
+        subjectIndicator:
+          $ref: '#/components/schemas/SubjectIndicator'          
+        navAreaCode:
+          $ref: '#/components/schemas/NavAreaCode'
         coastalWarningAreaCode:
           type: string
-          pattern:
+          pattern: '[a-zA-Z]'
+      required: [subjectIndicator, navAreaCode, coastalWarningAreaCode]
+          
+    SubjectIndicator:
+      type: string
+      enum: 
+      - NAVIGATIONAL_WARNINGS
+      - METEOROLOGICAL_WARNINGS
+      - ICE_REPORTS
+      - SAR_INFO_AND_PIRACY_WARNINGS
+      - METEOROLOGICAL_FORECASTS
+      - NOT_USED
+      - SATNAV_MESSAGES
+      - OTHER_ELECTRONIC_NAVAID_MESSAGES
+      - OTHER_NAVIGATIONAL_WARNINGS
+      - PILOT_SERVICE_MESSAGES
+      - AIS
+      - LORAN_MESSAGES
+      - SPECIAL_SERVICES_V
+      - SPECIAL_SERVICES_W
+      - SPECIAL_SERVICES_X
+      - SPECIAL_SERVICES_Y
+      - NO_MESSAGES_ON_HAND
                     
     Repetition:
       type: object
