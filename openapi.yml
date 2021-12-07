@@ -533,6 +533,12 @@ components:
           type: integer
           minimum: 1
           maximum: 21
+          
+    CoastalWarningArea:
+      properties: 
+        coastalWarningAreaCode:
+          type: string
+          pattern:
                     
     Repetition:
       type: object

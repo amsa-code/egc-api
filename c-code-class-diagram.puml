@@ -103,6 +103,7 @@ MSI <|-- NavWarningBroadcast
 SARBroadcast  -- "0..1" SARBroadcastArea
 MetBroadcast  -- "1" MeteorologicalArea
 NavWarningBroadcast  -- "1" NavWarningArea
+CoastalWarningArea -- "1" NavArea
 
 MSI -- "1" Priority
 MSI -- "1" Status
