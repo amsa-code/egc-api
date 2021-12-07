@@ -12,6 +12,7 @@ class MSI {
 }
 
 class SARBroadcast
+interface NonSARBroadcast
 class MetBroadcast {
   isForecast: boolean
 }
@@ -19,10 +20,14 @@ class NavWarningBroadcast {
   isPiracyWarning: boolean
 }
 
-enum Priority {
+enum SARPriority {
   SAFETY
   URGENCY
   DISTRESS
+}
+enum NonSARPriority {
+  SAFETY
+  URGENCY
 }
 enum Status {
   CREATED
@@ -124,14 +129,16 @@ SARBroadcastArea <|-- Geometry
 SARBroadcastArea <|-- NavArea
 
 MSI <|-- SARBroadcast
-MSI <|-- MetBroadcast
-MSI <|-- NavWarningBroadcast
+MSI <|-- NonSARBroadcast
+NonSARBroadcast <|-- MetBroadcast
+NonSARBroadcast <|-- NavWarningBroadcast
 
 SARBroadcast  -- "0..1" SARBroadcastArea
 MetBroadcast  -- "1" MeteorologicalArea
 NavWarningBroadcast  -- "1" NavWarningArea
 
-MSI -- "1" Priority
+NonSARBroadcast -- "1" NonSARPriority
+SARBroadcast -- "1" SARPriority
 MSI -- "1" Status
 
 @enduml

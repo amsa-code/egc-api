@@ -13,9 +13,9 @@ info:
   description: | 
     API for EGC provides to accept and manage broadcasts
     
-    **Design considerations**
+    ## Design considerations
     
-    *Two-phase send*
+    ### Two-phase send
         
     Sending a new MSI is two-phase (create then send). This is
     because the msiId value is a critical piece of information
@@ -55,7 +55,7 @@ info:
     Note also that to support two-phase send an additional status
     value has been added, `CREATED`.
     
-    **Pagination**
+    ### Pagination
     
     The List MSIs action uses a paginated response as the number of 
     MSIs in a response can get large. Client-driven pagination is 
@@ -69,38 +69,41 @@ info:
     can simply return an offset in the continuation token if desired but 
     we enable more efficient techniques if wanted later.
     
-    **Client specific identifiers**
+    ### Client specific identifiers
     
-    Early versions of this API have suggested the inclusion of a `National 
-    SAS Id` field in the created MSI with the purpose of allowing a client
-    to correlate an MSI with its internal data. 
+    Early versions of this API have suggested the inclusion of a 
+    `NationalSASId` field in the created MSI with the purpose of allowing 
+    a client to correlate an MSI with its internal data. 
     
     This field is a convenience only and thus theoretically should not be
-    included. A client should manage its correlations by storing the unique
-    msiId returned by the service paired with its internal identifiers. 
+    included. A client should manage its correlations itself by storing the
+    unique msiId returned by the service paired with its internal identifiers. 
     
     If something is required then it should be labelled something 
     like `tag` and have arbitrary values so that the client can use it for 
-    anything. Labelling it `National SAS Id` suggests more meaning to the
+    anything. Labelling it `NationalSASId` suggests more meaning to the
     field than it may have. TODO confirm.
     
-    **Piracy broadcasts**
+    ### Piracy broadcasts
     Piracy broadcasts appear to be structurally identical to Nav Warning
     broadcasts and so are modelled as Nav Warning broadcasts. TODO is there
     value in knowing that a Nav Warning broadcast was a piracy related
     broadcast? If so the we should add a `isPiracyWarning` boolean field to 
     the NavBroadcast.
     
-    **Geometry**
+    ### Geometry
     Note that the api below allows for float precision locations for 
     geographic circles and rectangles. An implementation of this API 
     may choose to use the location with reduced precision (for example
     lat longs rounded to nearest integer).
     
-    **Cancellation**
+    ### Cancellation
     A PUT to an `/msi/[id}` path ]with content like `{"isCancelled":true}` 
     has been suggested as a way of cancelling a broadcast. This can be 
-    achieved in a much simpler way with the DELETE verb without content. 
+    achieved in a much simpler way with the DELETE verb without content 
+    (a cancel action can be considered as a logical delete in the context
+    of this API). A cancelled broadcast cannot be changed in status but 
+    can be queried. 
     
 paths:
   
@@ -363,9 +366,13 @@ components:
       minLength: 1
       maxLength: 255
       
-    Priority:
+    SARPriority:
       type: string
       enum: [SAFETY, URGENCY, DISTRESS]
+    
+    NonSARPriority:
+      type: string
+      enum: [SAFETY, URGENCY]
       
     Status:
       type: string
@@ -456,14 +463,12 @@ components:
           type: string
           format: datetime
           description: TODO what happens if missing
-        priority:
-          $ref: '#/components/schemas/Priority'
         status:
           $ref: '#/components/schemas/Status'   
         repetition:
           $ref: '#/components/schemas/Repetition' 
       ## repetition is optional
-      required: [broadcast, priority, status]
+      required: [broadcast, status]
         
     Msi:
       type: object
@@ -489,14 +494,12 @@ components:
         endDate:
           type: string
           format: datetime
-        priority:
-          $ref: '#/components/schemas/Priority'
         status:
           $ref: '#/components/schemas/Status'   
         repetition:
           $ref: '#/components/schemas/Repetition' 
       ## repetition is optional
-      required: [id, broadcast, startDate, endDate, priority, status]
+      required: [id, broadcast, startDate, endDate, status]
         
     SARBroadcast:
       type: object
@@ -506,6 +509,8 @@ components:
       properties: 
         geometry:
           $ref: '#/components/schemas/SARBroadcastArea'
+        priority:
+          $ref: '#/components/schemas/SARPriority'
           
     SARBroadcastArea:
       oneOf:
@@ -519,6 +524,8 @@ components:
       properties:
         area:
           $ref: '#/components/schemas/MetBroadcastArea' 
+        priority:
+          $ref: '#/components/schemas/NonSARPriority'
       required: [area]
       
     MetBroadcastArea:
@@ -534,6 +541,8 @@ components:
       properties:
         area:
           $ref: '#/components/schemas/NavBroadcastArea' 
+        priority:
+          $ref: '#/components/schemas/NonSARPriority'
         isPiracyWarning:
           type: boolean
       required: [area, isPiracyWarning]        
