@@ -304,12 +304,12 @@ paths:
 components:
   parameters:
     MsiId:
-      - in: path
-        name: id
-        schema:
-          $ref: '#/components/schemas/MsiId'
-        description: unique msi identifier
-        required: true
+      in: path
+      name: id
+      schema:
+        $ref: '#/components/schemas/MsiId'
+      description: unique msi identifier
+      required: true
         
   responses:
     BadRequest:
@@ -457,8 +457,8 @@ components:
           $ref: '#/components/schemas/Status'   
         repetition:
           $ref: '#/components/schemas/Repetition' 
-        ## repetition is optional
-        required: [broadcast, priority, status]
+      ## repetition is optional
+      required: [broadcast, priority, status]
         
     Msi:
       type: object
@@ -490,8 +490,8 @@ components:
           $ref: '#/components/schemas/Status'   
         repetition:
           $ref: '#/components/schemas/Repetition' 
-        ## repetition is optional
-        required: [id, broadcast, startDate, endDate, priority, status]
+      ## repetition is optional
+      required: [id, broadcast, startDate, endDate, priority, status]
         
     SARBroadcast:
       type: object
