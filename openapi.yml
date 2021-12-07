@@ -97,6 +97,11 @@ info:
     may choose to use the location with reduced precision (for example
     lat longs rounded to nearest integer).
     
+    **Cancellation**
+    A PUT to an `/msi/[id}` path ]with content like `{"isCancelled":true}` 
+    has been suggested as a way of cancelling a broadcast. This can be 
+    achieved in a much simpler way with the DELETE verb without content. 
+    
 paths:
   
   /msi:
