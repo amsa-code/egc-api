@@ -11,8 +11,12 @@ class MSI {
   cancel()
 }
 class SARBroadcast
-class MetBroadcast
-class NavWarningBroadcast
+class MetBroadcast {
+  isForecast: boolean
+}
+class NavWarningBroadcast {
+  isPiracyWarning: boolean
+}
 
 enum Priority {
   SAFETY
@@ -46,7 +50,7 @@ enum IntervalHours {
 }
 
 interface Repetition 
-class OneRepeat
+class RepeatOnce
 class RepeatTillCancelled
 
 MSI -- "0..1" Repetition
@@ -62,9 +66,22 @@ class NavArea {
   navAreaNo: integer
 }
 class CoastalWarningArea {
+  navAreaNo: integer
   letter: char
 }
 
+enum SubjectIndicator {
+  NAVIGATIONAL_WARNINGS
+  METEOROLOGICAL_WARNINGS
+  ICE_REPORTS
+  SAR_INFO_AND_PIRACY_WARNINGS
+  METEOROLOGICAL_FORECASTS
+  SATNAV_MESSAGES
+  OTHER_ELECTRONIC_NAVAID_MESSAGES
+  OTHER_NAVIGATIONAL_WARNINGS
+}
+CoastalWarningArea -- "1" SubjectIndicator
+ 
 interface SARBroadcastArea
 
 class Circle {
@@ -103,7 +120,6 @@ MSI <|-- NavWarningBroadcast
 SARBroadcast  -- "0..1" SARBroadcastArea
 MetBroadcast  -- "1" MeteorologicalArea
 NavWarningBroadcast  -- "1" NavWarningArea
-CoastalWarningArea -- "1" NavArea
 
 MSI -- "1" Priority
 MSI -- "1" Status
