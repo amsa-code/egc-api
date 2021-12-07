@@ -16,7 +16,7 @@ info:
     ## Design considerations
     
     ### Two-phase send
-        
+    
     Sending a new MSI is two-phase (create then send). This is
     because the msiId value is a critical piece of information
     for the client (to be able to check status and/or cancel)
@@ -58,11 +58,12 @@ info:
     ### Pagination
     
     The List MSIs action uses a paginated response as the number of 
-    MSIs in a response can get large. Client-driven pagination is 
+    MSIs in a response can get large. Pagination can reduce server
+    overhead and improve response times. Client-driven pagination is 
     where the client specifies an offset (skip) field and that number
     of rows is skipped by the server to return the next page. This
-    can be inefficient for the server-side (see 
-    https://use-the-index-luke.com/no-offset) and it is preferred to 
+    can be inefficient for the server-side (see [discussion](
+    https://use-the-index-luke.com/no-offset)) and it is preferred to 
     use server-driven pagination which is where each page returned 
     also includes a continuation token to be included in the next page 
     call. The nice thing about this approach is that the server side
@@ -85,6 +86,7 @@ info:
     field than it may have. TODO confirm.
     
     ### Piracy broadcasts
+    
     Piracy broadcasts appear to be structurally identical to Nav Warning
     broadcasts and so are modelled as Nav Warning broadcasts. TODO is there
     value in knowing that a Nav Warning broadcast was a piracy related
@@ -92,12 +94,14 @@ info:
     the NavBroadcast.
     
     ### Geometry
+    
     Note that the api below allows for float precision locations for 
     geographic circles and rectangles. An implementation of this API 
     may choose to use the location with reduced precision (for example
     lat longs rounded to nearest integer).
     
     ### Cancellation
+    
     A PUT to an `/msi/[id}` path ]with content like `{"isCancelled":true}` 
     has been suggested as a way of cancelling a broadcast. This can be 
     achieved in a much simpler way with the DELETE verb without content 
@@ -386,7 +390,7 @@ components:
       type: string
       minLength: 1
       maxLength: 65535 ## TODO what max length is appropriate?
-      description: the IA5 message text to broadcast
+      description: the ASCII message text to broadcast
       
     Latitude:
       type: number
