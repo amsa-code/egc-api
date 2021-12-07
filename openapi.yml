@@ -129,7 +129,7 @@ paths:
             application/json:
               schema: 
                 type: 
-                  $ref: '#/components/schema/MsiId' 
+                  $ref: '#/components/schemas/MsiId' 
         '400':    
           $ref: '#/components/responses/BadRequest'
         '401': 
@@ -217,12 +217,12 @@ paths:
         - in: query
           name: msiType
           schema:
-            $ref:'#/components/schema/MsiType' 
+            $ref:'#/components/schemas/MsiType' 
           description: TODO
         - in: query
           name: continuationToken
           schema:
-            $ref: '#/components/parameters/ContinuationToken' 
+            $ref: '#/components/schemas/ContinuationToken' 
           description: |
             Describes to the server the starting point of 
             the next page of results and is obtained from 
@@ -269,7 +269,7 @@ paths:
           content:
             application/json:
               schema: 
-                $ref: '#/components/schemas/msi'
+                $ref: '#/components/schemas/Msi'
         '400':    
           $ref: '#/components/responses/BadRequest'
         '401': 
