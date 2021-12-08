@@ -218,7 +218,7 @@ paths:
         be sent by the user. 
         
         Note that none of the parameters are required and also that 
-        just one of startTimeInclusive or endTimeExclusive can be 
+        just one of startTime or endTime can be 
         provided if desired.
         
         The limit field may not be honoured exactly by the server
@@ -231,26 +231,35 @@ paths:
         client-side. TODO confirm this
       parameters:
         - in: query
-          name: startTimeInclusive
+          name: startDateMinInclusive
           description: |
             If provided then only MSIs whose broadcast for which 
-            startDate <= startTimeInclusive <= endDate are included in the
+            startDate >= startDateMinInclusive
             returned list of MSIs.
           schema:
             type: string
             format: datetime
         - in: query
-          name: endTimeExclusive
+          name: startDateMaxExclusive
           description: |
             If provided then only MSIs whose broadcasts for which 
-            startDate < endTimeExclusive < endDate are included in the
+            startDate < startDateMaxExclusive are included in the
             returned list of MSIs.
-            
-            The end time is exclusive so that the results of adjoining
-            time queries can be joined without overlap or missing data.
+        - in: query
+          name: endDateMinInclusive
+          description: |
+            If provided then only MSIs whose broadcast for which 
+            endDate >= endDateMinInclusive
+            returned list of MSIs.
           schema:
             type: string
             format: datetime
+        - in: query
+          name: endDateMaxExclusive
+          description: |
+            If provided then only MSIs whose broadcasts for which 
+            endDate < endDateMaxExclusive are included in the
+            returned list of MSIs.
         - in: query
           name: limit
           description: |
@@ -482,6 +491,7 @@ components:
       type: string
       minLength: 1
       maxLength: 255
+      example: 
       
     SARPriority:
       type: string
