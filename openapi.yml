@@ -418,7 +418,7 @@ components:
           type: string
           minLength: 1
         validityMinutes:
-          description | 
+          description: | 
             The duration in minutes that the token will be valid, 
             capped by the maximum allowed server-decided duration.  
             If not supplied (this parameter is optional) then the
