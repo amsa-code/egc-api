@@ -4,12 +4,10 @@ info:
   version: '1.0-alpha'
 
   title: EGC API
-  
-  ## Note that Common Markdown is in theory supported for use in the OpenAPI 
-  ## v3 description fields. As many YAML editors are not aware of this we 
-  ## use the convention of not using # characters (headings in markdown) in
-  ## multi-line descriptions and instead just use **bolding**.
-  
+
+  ## Note that description fields may use Common Markdown 
+  ## (supported by OpenApi 3)
+ 
   description: | 
     API for EGC provides to accept and manage broadcasts
     
@@ -541,6 +539,8 @@ components:
           type: string
           format: datetime
           description: TODO what happens if missing
+        payload: 
+          $ref: '#/components/schemas/Payload'          
         status:
           $ref: '#/components/schemas/Status'   
         repetition:
@@ -572,10 +572,12 @@ components:
         endDate:
           type: string
           format: datetime
+        payload: 
+          $ref: '#/components/schemas/Payload'
         status:
           $ref: '#/components/schemas/Status'   
         repetition:
-          $ref: '#/components/schemas/Repetition' 
+          $ref: '#/components/schemas/Repetition'
       ## repetition is optional
       required: [id, broadcast, startDate, endDate, status]
         
