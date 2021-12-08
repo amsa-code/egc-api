@@ -9,7 +9,7 @@ info:
   ## (supported by OpenApi 3)
  
   description: | 
-    # API for EGC provides to accept and manage broadcasts
+    # API for EGC providers to accept and manage broadcasts
     
     ## Design considerations
     
@@ -141,12 +141,11 @@ paths:
     ## Authenticate
     ###############################################   
     post:
-      summary: | 
+      summary: Authenticate
+      description: |
         Obtains a token that will be passed in a request header to calls
         to other paths on this API for authentication and authorization
         purposes.
-      description: |
-        TODO
       requestBody:
         description: | 
           TODO
@@ -175,9 +174,7 @@ paths:
     ## Create an MSI
     ###############################################      
     post:
-      summary: |
-        Submits message content and returns an id that is
-        to be used in the send method. 
+      summary: Create MSI
       description: |
         Submits message content and returns a unique id (across all 
         users) that is to be used in the send method. It is ok for
@@ -212,10 +209,11 @@ paths:
     ## List MSIs
     ###############################################      
     get:
-      summary: |
+      summary: List MSIs
+      description: |
         Returns Maritime Safety Information broadcasts requested to
         be sent by the user. 
-      description: |
+        
         Note that none of the parameters are required and also that 
         just one of startTimeInclusive or endTimeExclusive can be 
         provided if desired.
@@ -305,9 +303,9 @@ paths:
     ## Get an MSI
     ############################################### 
     get:
-      summary: Returns Maritime Safety Information broadcasts requested to be sent by the user
+      summary: Get MSI
       description: |
-        TODO
+        Returns the details of an MSI broadcast using the unique MSI identifier.
       responses:
         '200':    
           description: OK
@@ -328,10 +326,7 @@ paths:
     ## Send an MSI
     ###############################################      
     put:
-      summary: |
-        Requests that an existing unsent MSI be sent. If the MSI 
-        has already been sent then nothing occurs (this method is
-        idempotent). 
+      summary: Send MSI
       description: |
         Requests that an existing unsent MSI be sent. If the MSI 
         has already been sent then nothing occurs (this method is
@@ -352,7 +347,7 @@ paths:
     ## Cancel an MSI
     ############################################### 
     delete:
-      summary: Cancels an MSI broadcast 
+      summary: Cancel MSI 
       description: |
         This is a logical delete of a broadcast in that it
         prevents future broadcasts happening for this msiId
