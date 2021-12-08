@@ -245,6 +245,9 @@ paths:
             If provided then only MSIs whose broadcasts for which 
             startDate < startDateMaxExclusive are included in the
             returned list of MSIs.
+          schema:
+            type: string
+            format: datetime            
         - in: query
           name: endDateMinInclusive
           description: |
@@ -260,6 +263,9 @@ paths:
             If provided then only MSIs whose broadcasts for which 
             endDate < endDateMaxExclusive are included in the
             returned list of MSIs.
+          schema:
+            type: string
+            format: datetime            
         - in: query
           name: limit
           description: |
@@ -625,7 +631,7 @@ components:
         cancelledDate:
           type: string
           format: datetime
-          description |
+          description: |
             when the MSI was cancelled. This field should be set
             if the status is CANCELLED.
         startDate:
