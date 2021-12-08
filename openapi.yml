@@ -125,25 +125,23 @@ paths:
         content:
           application/json: 
             schema:
-              type: object
-              properties:
-                username:
-                  type: string
-                  minLength: 1
-                password:
-                  type: string
-                  minLength: 1
-                validityMinutes:
-                  description | 
-                    The duration in minutes that the token will be valid, 
-                    capped by the maximum allowed server-decided duration.  
-                    If not supplied (this parameter is optional) then the
-                    server default will be applied. Either way the response
-                    from this method supplies the expiry timestamp for the
-                    token.
-                  type: integer
-                  minimum: 1
-              required: [username, password]
+              $ref: '#/components/schemas/AuthenticationRequestBody'
+      responses:
+        '200':    
+          description: OK
+          content:
+            application/json:
+              schema: 
+                type: object
+                 
+        '400':    
+          $ref: '#/components/responses/BadRequest'
+        '401': 
+          $ref: '#/components/responses/Unauthorized'
+        '403': 
+          $ref: '#/components/responses/Forbidden'          
+        '500':    
+          $ref: '#/components/responses/ServerError'              
   
   /msi:
   
@@ -398,6 +396,27 @@ components:
             type: string
         cause:
           $ref: '#/components/schemas/Error' 
+
+    AuthenticationRequestBody:
+      type: object
+        properties:
+          username:
+            type: string
+            minLength: 1
+          password:
+            type: string
+            minLength: 1
+          validityMinutes:
+            description | 
+              The duration in minutes that the token will be valid, 
+              capped by the maximum allowed server-decided duration.  
+              If not supplied (this parameter is optional) then the
+              server default will be applied. Either way the response
+              from this method supplies the expiry timestamp for the
+              token.
+            type: integer
+            minimum: 1
+        required: [username, password]
           
     MsiId:
       type: string
