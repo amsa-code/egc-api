@@ -119,7 +119,7 @@ info:
     **TODO** is there a requirement for full explicit C-Code support (zero 
     abstraction)?
     
-    ## Authentication
+    ### Authentication
     Initial proposals by Inmarsat and Iridium included a re-authenticate 
     method whereby a new token was returned if a currently valid token was 
     supplied. This is a security hole in that anyone in possession of one 
