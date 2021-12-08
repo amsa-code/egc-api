@@ -253,7 +253,13 @@ paths:
             format: datetime
         - in: query
           name: limit
-          description: TODO
+          description: |
+            Requests that at most `limit` MSIs are returned in the call.
+            The server may cap the requested `limit` (fewer items may be
+            returned). To request the next page available include the 
+            returned `continuationToken` in the next call. If there are 
+            no more items available then the response will not contain
+            a `continuationToken`.
           schema:
             type: integer
             minimum: 1
@@ -605,15 +611,23 @@ components:
           type: string
           format: datetime
           description: |
-            when the msi was created
+            when the MSI was created
+        cancelledDate:
+          type: string
+          format: datetime
+          description |
+            when the MSI was cancelled. This field should be set
+            if the status is CANCELLED.
         startDate:
           type: string
           format: datetime
           description: |
-            if startDate is missing then now is assumed
+            Start time of the broadcast schedule
         endDate:
           type: string
           format: datetime
+          description: |
+            End time of the broadcast schedule 
         payload: 
           $ref: '#/components/schemas/Payload'
         status:
@@ -621,7 +635,7 @@ components:
         repetition:
           $ref: '#/components/schemas/Repetition'
       ## repetition is optional
-      required: [id, broadcast, startDate, endDate, status]
+      required: [id, broadcast, createDate, startDate, endDate, status]
         
     SARBroadcast:
       type: object
