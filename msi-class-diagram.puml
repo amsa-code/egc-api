@@ -111,19 +111,19 @@ class Rectangle {
   widthDegrees: decimal
 }
 interface Geometry
-interface NavWarningArea
-interface MeteorologicalArea
+interface NavBroadcastArea
+interface MetBroadcastArea
 
 Geometry <|-- Circle
 Geometry <|-- Rectangle
 
-NavWarningArea <|-- NavArea
-NavWarningArea <|-- CoastalWarningArea
-NavWarningArea <|-- Geometry
+NavBroadcastArea <|-- NavArea
+NavBroadcastArea <|-- CoastalWarningArea
+NavBroadcastArea <|-- Geometry
 
-MeteorologicalArea <|-- Geometry
-MeteorologicalArea <|-- CoastalWarningArea
-MeteorologicalArea <|-- MetArea
+MetBroadcastArea <|-- Geometry
+MetBroadcastArea <|-- CoastalWarningArea
+MetBroadcastArea <|-- MetArea
 
 SARBroadcastArea <|-- Geometry
 SARBroadcastArea <|-- NavArea
@@ -134,8 +134,8 @@ NonSARBroadcast <|-- MetBroadcast
 NonSARBroadcast <|-- NavWarningBroadcast
 
 SARBroadcast  -- "0..1" SARBroadcastArea
-MetBroadcast  -- "1" MeteorologicalArea
-NavWarningBroadcast  -- "1" NavWarningArea
+MetBroadcast  -- "1" MetBroadcastArea
+NavWarningBroadcast  -- "1" NavBroadcastArea
 
 NonSARBroadcast -- "1" NonSARPriority
 SARBroadcast -- "1" SARPriority
