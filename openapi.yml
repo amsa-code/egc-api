@@ -108,9 +108,9 @@ info:
     of this API). A cancelled broadcast cannot be changed in status but 
     can be queried. 
     
-    ## Abstraction of C-Codes
+    ### Abstraction of C-Codes
     Initial proposals by Inmarsat and Iridium for the API suggested a partial 
-    abstraction of C-Codes. In particular Priority, MsiTypea and AreaType
+    abstraction of C-Codes. In particular Priority, MsiType and AreaType
     were abstracted. This API demonstrates a full abstraction of C-Codes. It 
     is equivalent to C-Codes but has an easier to read and process representation.
     In addition to this by using the data modelling constructs of OpenAPI v3
