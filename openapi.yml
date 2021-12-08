@@ -148,7 +148,7 @@ paths:
         purposes.
       requestBody:
         description: | 
-          TODO
+          username and password
         required: true
         content:
           application/json: 
@@ -156,7 +156,7 @@ paths:
               $ref: '#/components/schemas/AuthenticationRequestBody'
       responses:
         '200':    
-          description: OK
+          description: token and expiry time
           content:
             application/json:
               schema: 
@@ -183,7 +183,8 @@ paths:
         reasonable period (TODO ask providers what is reasonable
         minimum period so it can be documented here).
       requestBody:
-        description: TODO
+        description: |
+          Describes the message content.
         required: true
         content:
           application/json:
@@ -191,7 +192,7 @@ paths:
               $ref: '#/components/schemas/MsiContent'
       responses:
         '200':    
-          description: OK
+          description: The unique identifier of the newly created MSI
           content:
             application/json:
               schema: 
@@ -229,13 +230,22 @@ paths:
       parameters:
         - in: query
           name: startTimeInclusive
-          description: TODO
+          description: |
+            If provided then only MSIs whose broadcast for which 
+            startDate <= startTimeInclusive <= endDate are included in the
+            returned list of MSIs.
           schema:
             type: string
             format: datetime
         - in: query
           name: endTimeExclusive
-          description: TODO
+          description: |
+            If provided then only MSIs whose broadcasts for which 
+            startDate < endTimeExclusive < endDate are included in the
+            returned list of MSIs.
+            
+            The end time is exclusive so that the results of adjoining
+            time queries can be joined without overlap or missing data.
           schema:
             type: string
             format: datetime
@@ -566,7 +576,7 @@ components:
         Represents a created MMSI (with an identifier).
         
         `repetition` is optional. If omitted once only is assumed
-        (no repetition). `startDateInclusive` and `endDateExclusive`
+        (no repetition). `startDate` and `endDate`
         are optional fields and 0, 1 or both can be present.
       properties:
         id: 
@@ -578,9 +588,16 @@ components:
           - $ref: '#/components/schemas/NavBroadcast'
           discriminator:
             propertyName: broadcastType
+        createDate:
+          type: string
+          format: datetime
+          description: |
+            when the msi was created
         startDate:
           type: string
           format: datetime
+          description: |
+            if startDate is missing then now is assumed
         endDate:
           type: string
           format: datetime
