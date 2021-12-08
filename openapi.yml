@@ -108,6 +108,19 @@ info:
     of this API). A cancelled broadcast cannot be changed in status but 
     can be queried. 
     
+    ## Abstraction of C-Codes
+    Initial proposals by Inmarsat and Iridium for the API suggested a partial 
+    abstraction of C-Codes. In particular Priority, MsiTypea and AreaType
+    were abstracted. This API demonstrates a full abstraction of C-Codes. It 
+    is equivalent to C-Codes but has an easier to read and process representation.
+    In addition to this by using the data modelling constructs of OpenAPI v3
+    and JSON Schema users can generate code for their consuming application
+    that imposes compile-time checking (varies on language) instead of 
+    experiencing runtime failures.
+    
+    TODO is there a requirement for full explicit C-Code support (zero 
+    abstraction)?
+    
 paths:
 
   /authenticate:
@@ -132,14 +145,11 @@ paths:
           content:
             application/json:
               schema: 
-                type: object
-                 
+                $ref: '#/components/schemas/AuthenticationResponse' 
         '400':    
           $ref: '#/components/responses/BadRequest'
         '401': 
           $ref: '#/components/responses/Unauthorized'
-        '403': 
-          $ref: '#/components/responses/Forbidden'          
         '500':    
           $ref: '#/components/responses/ServerError'              
   
@@ -399,25 +409,35 @@ components:
 
     AuthenticationRequestBody:
       type: object
-        properties:
-          username:
-            type: string
-            minLength: 1
-          password:
-            type: string
-            minLength: 1
-          validityMinutes:
-            description | 
-              The duration in minutes that the token will be valid, 
-              capped by the maximum allowed server-decided duration.  
-              If not supplied (this parameter is optional) then the
-              server default will be applied. Either way the response
-              from this method supplies the expiry timestamp for the
-              token.
-            type: integer
-            minimum: 1
-        required: [username, password]
+      properties:
+        username:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          minLength: 1
+        validityMinutes:
+          description | 
+            The duration in minutes that the token will be valid, 
+            capped by the maximum allowed server-decided duration.  
+            If not supplied (this parameter is optional) then the
+            server default will be applied. Either way the response
+            from this method supplies the expiry timestamp for the
+            token.
+          type: integer
+          minimum: 1
+      required: [username, password]
           
+    AuthenticationResponse:
+      type: object
+      properties:
+        token: 
+          type: string
+          minLength: 1
+        expiryTime:
+          type: string
+          format: datetime
+        
     MsiId:
       type: string
       minLength: 1
