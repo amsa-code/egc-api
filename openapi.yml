@@ -109,6 +109,41 @@ info:
     can be queried. 
     
 paths:
+
+  /authenticate:
+    post:
+      summary: | 
+        Obtains a token that will be passed in a request header to calls
+        to other paths on this API for authentication and authorization
+        purposes.
+      description: |
+        TODO
+      requestBody:
+        description: | 
+          TODO
+        required: true
+        content:
+          application/json: 
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  minLength: 1
+                password:
+                  type: string
+                  minLength: 1
+                validityMinutes:
+                  description | 
+                    The duration in minutes that the token will be valid, 
+                    capped by the maximum allowed server-decided duration.  
+                    If not supplied (this parameter is optional) then the
+                    server default will be applied. Either way the response
+                    from this method supplies the expiry timestamp for the
+                    token.
+                  type: integer
+                  minimum: 1
+              required: [username, password]
   
   /msi:
   
