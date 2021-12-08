@@ -119,6 +119,20 @@ info:
     TODO is there a requirement for full explicit C-Code support (zero 
     abstraction)?
     
+    ## Authentication
+    Initial proposals by Inmarsat and Iridium included a re-authenticate 
+    method whereby a new token was returned if a currently valid token was 
+    supplied. This is a security hole in that anyone in possession of one 
+    valid token (but not the username and password) can stay authenticated 
+    forever. In the same vein, a sensible limit on validity duration of a 
+    token should be imposed. Common practice for token refresh in REST 
+    services is to force a refresh every 15 minutes to an hour.
+    
+    Note that in the context of web applications the fact that the token
+    refresh is at 15 minutes does not preclude the web application being 
+    coded to only require username and password entry by the user every 
+    N hours. 
+    
 paths:
 
   /authenticate:
