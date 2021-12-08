@@ -10,3 +10,4 @@ Note that a number of design considerations are discussed in the opening descrip
 
 Below is a visualization of the data model of an MSI broadcast.
 
+<img style="background-color:white" src="class-diagram.svg"/>
