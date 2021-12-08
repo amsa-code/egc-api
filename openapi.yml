@@ -122,7 +122,10 @@ info:
 paths:
 
   /authenticate:
-  
+
+    ###############################################
+    ## Authenticate
+    ###############################################   
     post:
       summary: | 
         Obtains a token that will be passed in a request header to calls
