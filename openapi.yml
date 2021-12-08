@@ -9,7 +9,7 @@ info:
   ## (supported by OpenApi 3)
  
   description: | 
-    API for EGC provides to accept and manage broadcasts
+    # API for EGC provides to accept and manage broadcasts
     
     ## Design considerations
     
