@@ -82,14 +82,6 @@ info:
     anything. Labelling it `NationalSASId` suggests more meaning to the
     field than it may have. **TODO** confirm.
     
-    ### Piracy broadcasts
-    
-    Piracy broadcasts appear to be structurally identical to Nav Warning
-    broadcasts and so are modelled as Nav Warning broadcasts. **TODO** is there
-    value in knowing that a Nav Warning broadcast was a piracy related
-    broadcast? If so the we should add a `isPiracyWarning` boolean field to 
-    the NavBroadcast (it is currently present).
-    
     ### Geometry
     
     Note that the api below allows for float precision locations for 
@@ -541,7 +533,7 @@ components:
       
     BroadcastType:
       type: string
-      enum: [SARBroadcast, MetBroadcast, NavBroadcast]
+      enum: [SARBroadcast, MetBroadcast, NavBroadcast, PiracyBroadcast]
       example: SARBroadcast
       
     Payload:
@@ -659,6 +651,7 @@ components:
           - $ref: '#/components/schemas/SARBroadcast'
           - $ref: '#/components/schemas/MetBroadcast'
           - $ref: '#/components/schemas/NavBroadcast'
+          - $ref: '#/components/schemas/PiracyBroadcast'
           discriminator:
             propertyName: msiType
           example:
@@ -700,11 +693,12 @@ components:
         id: 
           $ref: '#/components/schemas/MsiId'
         broadcast:
-          description: one of SARBroadcast, MetBroadcast or NavBroadcast
+          description: the details of the broadcast particular to the broadcast type
           oneOf:
           - $ref: '#/components/schemas/SARBroadcast'
           - $ref: '#/components/schemas/MetBroadcast'
           - $ref: '#/components/schemas/NavBroadcast'
+          - $ref: '#/components/schemas/PiracyBroadcast'
           discriminator:
             propertyName: broadcastType
           example:
@@ -789,14 +783,21 @@ components:
       type: object
       properties:
         area:
-          $ref: '#/components/schemas/NavBroadcastArea' 
+          $ref: '#/components/schemas/NavOrPiracyBroadcastArea' 
         priority:
           $ref: '#/components/schemas/NonSARPriority'
-        isPiracyWarning:
-          type: boolean
-      required: [area, isPiracyWarning]        
+      required: [area, isPiracyWarning]    
+      
+    PiracyBroadcast:
+      type: object
+      properties:
+        area:
+          $ref: '#/components/schemas/NavOrPiracyBroadcastArea' 
+        priority:
+          $ref: '#/components/schemas/NonSARPriority'
+      required: [area, isPiracyWarning]    
         
-    NavBroadcastArea:
+    NavOrPiracyBroadcastArea:
       oneOf:
       - $ref: '#/components/schemas/Geometry'
       - $ref: '#/components/schemas/NavArea'
