@@ -1,6 +1,6 @@
 # Enhanced Group Call (EGC) API
 
-This repository is a collaboration point to support the development of a common and well-defined API to be used by EGC service providers (currently Inmarsat and Iridium). 
+This repository is a collaboration point to support the development of a common and fully-defined REST API to be implemented by EGC satellite service providers (currently Inmarsat and Iridium). 
 
 The defacto standard for the definition of REST APIs is [OpenAPI v3](https://swagger.io/specification/) which is a YAML or JSON document. The YAML and JSON representations are equivalent, this site uses YAML format for its readability advantages.
 
@@ -10,6 +10,12 @@ Note that a number of design considerations are discussed in the opening descrip
 
 A useful tool for editing and visualizing the API in HTML documentation is at https://editor.swagger.io/.
 
+## MSI Class Diagram
+
 Below is a visualization of the data model of an MSI broadcast (as a [UML Class Diagram](https://en.wikipedia.org/wiki/Class_diagram)).
+
+Notes:
+* A SARBroadcast has zero or one SARBroadcastArea. When a SARBroadcastArea is not specified the whole coverage area is assumed.
+* An MSI has zero or one Repetition. When a Repetition is not specified then the broadcast happens only once (there may still be the standard 6 minute echo). 
 
 <img style="background-color:white" src="diagrams/msi-class-diagram.svg"/>
