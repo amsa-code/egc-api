@@ -223,37 +223,71 @@ paths:
         Returns Maritime Safety Information broadcasts requested to
         be sent by the user. 
         
-        Note that none of the parameters are required and also that 
-        just one of startTime or endTime can be 
-        provided if desired.
+        Note that none of the parameters are required. If no parameters
+        are supplied then all MSIs for the current user will be returned
+        (paged).
         
-        The limit field may not be honoured exactly by the server
+        The `limit` field may not be honoured exactly by the server
         side (in that it might exceed a maximum limit of the server).
         
         The results of this query may return in any order and that order
-        may vary in repeated calls (for example, the returned MSIs may 
+        may vary in repeated calls (for example, the returned MSIs *may* 
         not be ordered by timestamp). If the client requires an ordering
         by time then all pages should be requested and then sorted 
-        client-side. TODO confirm this
+        client-side. TODO confirm expectations
       parameters:
         - in: query
-          name: startTime
-          description: |
-            If provided then only MSIs whose broadcasts for which 
-            the msi.startTime satisfies the given criteria (either an 
-            exact time or within a given possibly open ended range) are 
-            included in the returned list of MSIs.
+          name: startTimeMin
+          description:
           schema:
-            $ref: '#/components/schemas/ExactTimeOrRange' 
+            type: string
+            format: datetime
+            example: '2022-04-20T18:25:43.511Z' 
         - in: query
-          name: endTime
-          description: |
-            If provided then only MSIs whose broadcasts for which 
-            the msi.endTime satisfies the given criteria (either an 
-            exact time or within a given possibly open ended range) are 
-            included in the returned list of MSIs.
+          name: startTimeMinInclusive
+          description:
           schema:
-            $ref: '#/components/schemas/ExactTimeOrRange'            
+            type: boolean
+            example: true
+        - in: query
+          name: startTimeMax
+          description:
+          schema:
+            type: string
+            format: datetime
+            example: '2022-04-24T23:25:43.511Z'
+        - in: query
+          name: startTimeMaxInclusive
+          description:
+          schema:
+            type: boolean
+            example: true
+        - in: query
+          name: endTimeMin
+          description:
+          schema:
+            type: string
+            format: datetime
+            example: '2022-04-21T18:25:43.511Z'
+        - in: query
+          name: endTimeMinInclusive
+          description:
+          schema:
+            type: boolean
+            example: true 
+        - in: query
+          name: endTimeMax
+          description:
+          schema:
+            type: string
+            format: datetime
+            example: '2022-04-25T14:18:23.000Z'
+        - in: query
+          name: endTimeMaxInclusive
+          description:
+          schema:
+            type: boolean
+            example: true             
         - in: query
           name: limit
           description: |
@@ -556,42 +590,6 @@ components:
       minimum: -180
       maximum: 180
       example: 145.44
-      
-    ExactTimeOrRange:
-      oneOf:
-      - $ref: '#/components/schemas/Time'
-      - $ref: '#/components/schemas/TimeRange'
-      example:
-        min: '2022-04-23T18:25:43.511Z'
-        max: '2022-04-27T20:00:00.000Z'
-        maxInclusive: false
-
-    Time:
-      type: string
-      format: datetime
-      example: '2022-04-23T18:25:43.511Z'
-      
-    TimeRange:
-      description: |
-        A time range with optional min or max. If neither are
-        present then represents all time.    
-      type: object
-      properties:
-        min:
-          type: string
-          format: datetime
-        max:
-          type: string
-          format: datetime
-        minInclusive:
-          type: boolean
-          description: |
-            if not present then assumed true
-        maxInclusive:
-          type: boolean
-          description: |
-            if not present then assumed true
-
       
     Circle:
       type: object
