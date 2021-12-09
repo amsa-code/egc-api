@@ -291,13 +291,11 @@ paths:
             - CANCELLED
         - in: query
           name: broadcastType
+          description: the type of broadcast
           schema:
             $ref: '#/components/schemas/BroadcastType' 
-          description: TODO
         - in: query
           name: continuationToken
-          schema:
-            $ref: '#/components/schemas/ContinuationToken' 
           description: |
             Describes to the server the starting point of 
             the next page of results and is obtained from 
@@ -307,6 +305,8 @@ paths:
             token may return en empty list (but an empty list return 
             should not have a continuation token on it so at 
             that point paging would stop).
+          schema:
+            $ref: '#/components/schemas/ContinuationToken' 
         ## review other fields, acks etc.
       responses:
         '200':    
@@ -700,6 +700,7 @@ components:
         id: 
           $ref: '#/components/schemas/MsiId'
         broadcast:
+          description: one of SARBroadcast, MetBroadcast or NavBroadcast
           oneOf:
           - $ref: '#/components/schemas/SARBroadcast'
           - $ref: '#/components/schemas/MetBroadcast'
