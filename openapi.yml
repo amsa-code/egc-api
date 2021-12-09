@@ -451,6 +451,7 @@ components:
         ## all properties optional
         errorMessage: 
           type: string
+          example: an error occurred
         errorType:
           type: string
         stackTrace:
@@ -459,6 +460,9 @@ components:
             type: string
         cause:
           $ref: '#/components/schemas/Error' 
+      example:
+        errorMessage: an error occurred
+        errorType: SomethingWentWrongException
 
     AuthenticationRequestBody:
       description: |
@@ -470,9 +474,11 @@ components:
         username:
           type: string
           minLength: 1
+          example: myrcc
         password:
           type: string
           minLength: 1
+          example: a-nice-strong-password
         validityMinutes:
           description: | 
             The duration in minutes that the token will be valid, 
@@ -484,14 +490,20 @@ components:
             time to avoid auth related failures.
           type: integer
           minimum: 1
+          example: 60
       required: [username, password]
-          
+      example:
+        username: myrcc
+        password: a-nice-strong-password
+        validityMinutes: 60
+        
     AuthenticationResponse:
       type: object
       properties:
         token: 
           type: string
           minLength: 1
+          example: '1/mZ1edKKACtPAb7zGlwSzvs72PvhAbGmB8K1ZrGxpcNM'
         expiryTime:
           type: string
           format: datetime
@@ -500,6 +512,7 @@ components:
             because a requested validity duration may be 
             capped by the server and the client needs to know 
             what the resultant expiry time was.
+          example: '2022-04-23T18:25:43.511Z'
       required: [token, expiryTime]
         
     MsiId:
@@ -533,9 +546,8 @@ components:
       type: string
       minLength: 1
       maxLength: 65535 ## TODO what max length is appropriate?
-      example: |
-        a message to be broadcast 
-      
+      example: a message to be broadcast 
+
     Latitude:
       type: number
       format: float
@@ -643,16 +655,26 @@ components:
           - $ref: '#/components/schemas/NavBroadcast'
           discriminator:
             propertyName: msiType
+          example:
+            broadcastType: SARBroadcast
+            geometry: 
+              geometryType: Circle
+              lat: -34.5
+              lon: 145.44
+              radiusNm: 150
+            priority: SAFETY
         startTime:
           type: string
           format: datetime
           description: the scheduled time of the initial broadcast
+          example: '2022-04-23T10:30:43.511Z'
         endTime:
           type: string
           format: datetime
           description: |
             the time after which no more broadcasts should be made
             of this MSI 
+          example: '2022-04-24T10:25:43.511Z'
         payload: 
           $ref: '#/components/schemas/Payload'          
         repetition:
