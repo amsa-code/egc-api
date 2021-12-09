@@ -107,20 +107,20 @@ info:
     can be queried. 
     
     ### Abstraction of C-Codes
-    Initial proposals by Inmarsat and Iridium for the API suggested a partial 
-    abstraction of C-Codes. In particular Priority, MsiType and AreaType
-    were abstracted. This API demonstrates a full abstraction of C-Codes. It 
-    is equivalent to C-Codes but has an easier to read and process representation.
-    In addition to this by using the data modelling constructs of OpenAPI v3
-    and JSON Schema users can generate code for their consuming application
-    that imposes compile-time checking (varies on language) instead of 
-    experiencing runtime failures.
+    Initial proposals for the API suggested a partial abstraction of C-Codes. 
+    In particular Priority, MsiType and AreaType were abstracted. This API 
+    demonstrates a full abstraction of C-Codes. It is equivalent to C-Codes
+    but has an easier to read and process representation and the mapping to C-Codes 
+    then becomes a server-side implementation detail. By using the data modelling
+    constructs of OpenAPI v3 and JSON Schema users can generate code for their 
+    API-consuming application that imposes compile-time checking (varies on language)
+    instead of experiencing runtime failures.
     
     **TODO** is there a requirement for full explicit C-Code support (zero 
     abstraction)?
     
     ### Authentication
-    Initial proposals by Inmarsat and Iridium included a re-authenticate 
+    Initial proposals for this API included a re-authenticate 
     method whereby a new token was returned if a currently valid token was 
     supplied. This is a security hole in that anyone in possession of one 
     valid token (but not the username and password) can stay authenticated 
@@ -133,6 +133,19 @@ info:
     coded to only require username and password entry by a user every 
     N hours. It's just some additional coding that needs to happen to cache
     the username and password locally for a period. 
+    
+    ### Naming
+    Previous API drafts used the field names `startDate` and `endDate` for an MSI.
+    Given that those fields refer to timestamps not just dates the names `startTime`
+    and `endTime` have been used.
+    
+    ### Additional Fields
+    There are obvious use cases for the following additional fields on an MSI:
+    
+    * createTime
+    * cancelledTime
+    
+    TODO confirm
     
 paths:
 
@@ -231,41 +244,23 @@ paths:
         client-side. TODO confirm this
       parameters:
         - in: query
-          name: startDateMinInclusive
-          description: |
-            If provided then only MSIs whose broadcast for which 
-            startDate >= startDateMinInclusive
-            returned list of MSIs.
-          schema:
-            type: string
-            format: datetime
-        - in: query
-          name: startDateMaxExclusive
+          name: startTime
           description: |
             If provided then only MSIs whose broadcasts for which 
-            startDate < startDateMaxExclusive are included in the
-            returned list of MSIs.
+            the msi.startTime satisfies the given criteria (either an 
+            exact time or within a given possibly open ended range) are 
+            included in the returned list of MSIs.
           schema:
-            type: string
-            format: datetime            
+            $ref: '#/components/schemas/ExactTimeOrRange' 
         - in: query
-          name: endDateMinInclusive
-          description: |
-            If provided then only MSIs whose broadcast for which 
-            endDate >= endDateMinInclusive
-            returned list of MSIs.
-          schema:
-            type: string
-            format: datetime
-        - in: query
-          name: endDateMaxExclusive
+          name: endTime
           description: |
             If provided then only MSIs whose broadcasts for which 
-            endDate < endDateMaxExclusive are included in the
-            returned list of MSIs.
+            the msi.endTime satisfies the given criteria (either an 
+            exact time or within a given possibly open ended range) are 
+            included in the returned list of MSIs.
           schema:
-            type: string
-            format: datetime            
+            $ref: '#/components/schemas/ExactTimeOrRange'            
         - in: query
           name: limit
           description: |
@@ -441,6 +436,7 @@ components:
                       
   schemas:
     Error:
+      description: an error message (response)
       type: object
       properties:
         ## all properties optional
@@ -456,6 +452,10 @@ components:
           $ref: '#/components/schemas/Error' 
 
     AuthenticationRequestBody:
+      description: |
+        Holds the credentials and validity preference used to 
+        create a token to be passed as a request header in calls
+        to the API
       type: object
       properties:
         username:
@@ -497,29 +497,35 @@ components:
       type: string
       minLength: 1
       maxLength: 255
-      example: 
+      example: 289ee192-fdf5-4070-befc-3bf7291c1386
       
     SARPriority:
       type: string
       enum: [SAFETY, URGENCY, DISTRESS]
+      example: SAFETY
     
     NonSARPriority:
       type: string
       enum: [SAFETY, URGENCY]
+      example: URGENCY
       
     Status:
       type: string
       enum: [CREATED, SCHEDULED, ACTIVE, FINISHED, CANCELLED]
+      example: ACTIVE
       
     MsiType:
       type: string
       enum: [SARBroadcast, MetBroadcast, NavBroadcast]
+      example: SARBroadcast
       
     Payload:
+      description: the ASCII message text to broadcast
       type: string
       minLength: 1
       maxLength: 65535 ## TODO what max length is appropriate?
-      description: the ASCII message text to broadcast
+      example: |
+        a message to be broadcast 
       
     Latitude:
       type: number
@@ -532,6 +538,41 @@ components:
       format: float
       minimum: -180
       maximum: 180
+      
+    ExactTimeOrRange:
+      oneOf:
+      - $ref: '#/components/schemas/Time'
+      - $ref: '#/components/schemas/TimeRange'
+      example:
+        min: '2022-04-23T18:25:43.511Z'
+        max: '2022-04-27T20:00:00.000Z'
+        maxInclusive: false
+
+    Time:
+      type: string
+      format: datetime
+      example: '2022-04-23T18:25:43.511Z'
+      
+    TimeRange:
+      type: object
+      properties:
+        min:
+          type: string
+          format: datetime
+        max:
+          type: string
+          format: datetime
+        minInclusive:
+          type: boolean
+          description: |
+            if not present then assumed true
+        maxInclusive:
+          type: boolean
+          description: |
+            if not present then assumed true
+      description: |
+        A time range with optional min or max. If neither are
+        present then represents all time.
       
     Circle:
       type: object
@@ -572,13 +613,18 @@ components:
       - $ref: '#/components/schemas/Circle'
       discriminator:
         propertyName: geometryType
+      example:
+        geometryType: Circle
+        lat: -42.5
+        lon: 135.884
+        radiusNm: 100.5
         
     MsiContent:
       type: object
       description: |
         Used to create a new MSI. `repetition` is optional. If omitted
-        once only is assumed (no repetition). `startDate` and
-        `endDate` are optional fields and 0, 1 or both can be
+        once only is assumed (no repetition). `startTime` and
+        `endTime` are optional fields and 0, 1 or both can be
         present.
       properties:
         broadcast:
@@ -588,11 +634,11 @@ components:
           - $ref: '#/components/schemas/NavBroadcast'
           discriminator:
             propertyName: msiType
-        startDate:
+        startTime:
           type: string
           format: datetime
           description: the scheduled time of the initial broadcast
-        endDate:
+        endTime:
           type: string
           format: datetime
           description: |
@@ -611,7 +657,7 @@ components:
         Represents a created MMSI (with an identifier).
         
         `repetition` is optional. If omitted once only is assumed
-        (no repetition). `startDate` and `endDate`
+        (no repetition). `startTime` and `endTime`
         are optional fields and 0, 1 or both can be present.
       properties:
         id: 
@@ -623,27 +669,39 @@ components:
           - $ref: '#/components/schemas/NavBroadcast'
           discriminator:
             propertyName: broadcastType
-        createDate:
+          example:
+            broadcastType: SARBroadcast
+            geometry: 
+              geometryType: Circle
+              lat: -34.5
+              lon: 145.44
+              radiusNm: 150
+            priority: SAFETY
+        createTime:
           type: string
           format: datetime
           description: |
             when the MSI was created
-        cancelledDate:
+          example: '2022-04-23T10:25:43.511Z'
+        cancelledTime:
           type: string
           format: datetime
           description: |
             when the MSI was cancelled. This field should be set
             if the status is CANCELLED.
-        startDate:
+          example: '2022-04-24T13:28:43.511Z'
+        startTime:
           type: string
           format: datetime
           description: |
             Start time of the broadcast schedule
-        endDate:
+          example: '2022-04-23T10:30:43.511Z'
+        endTime:
           type: string
           format: datetime
           description: |
-            End time of the broadcast schedule 
+            End time of the broadcast schedule
+          example: '2022-04-24T10:25:43.511Z'
         payload: 
           $ref: '#/components/schemas/Payload'
         status:
@@ -651,7 +709,7 @@ components:
         repetition:
           $ref: '#/components/schemas/Repetition'
       ## repetition is optional
-      required: [id, broadcast, createDate, startDate, endDate, status]
+      required: [id, broadcast, createTime, startTime, endTime, status]
         
     SARBroadcast:
       type: object
@@ -784,3 +842,4 @@ components:
         Indicates to the server the starting point of the next page 
         of results. The token is not expected to be anywhere near as
         long as 4096 characters but good to put an upper bound on it. 
+      example: 10
