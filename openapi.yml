@@ -238,55 +238,106 @@ paths:
       parameters:
         - in: query
           name: startTimeMin
-          description:
+          description: | 
+            If startTimeMinInclusive is true (the default value if not specified)
+            then filters MSIs on startTime >= startTimeMin.
+            
+            If startTimeMinInclusive is false then filters MSIs
+            on startTime > startTimeMin.
           schema:
             type: string
             format: datetime
             example: '2022-04-20T18:25:43.511Z' 
         - in: query
           name: startTimeMinInclusive
-          description:
+          description: |
+            If startTimeMinInclusive is true (the default value if not specified)
+            then filters MSIs on startTime >= startTimeMin.
+            
+            If startTimeMinInclusive is false then filters MSIs
+            on startTime > startTimeMin.
+            
+            If startTimeMinInclusive not specified then has no effect.
           schema:
             type: boolean
+            default: true
             example: true
         - in: query
           name: startTimeMax
-          description:
+          description: |
+            If startTimeMaxInclusive is true (the default value if not specified)
+            then filters MSIs on startTime <= startTimeMax.
+            
+            If startTimeMaxInclusive is false then filters MSIs
+            on startTime < startTimeMax.
           schema:
             type: string
             format: datetime
             example: '2022-04-24T23:25:43.511Z'
         - in: query
           name: startTimeMaxInclusive
-          description:
+          description: |
+            If startTimeMaxInclusive is true (the default value if not specified)
+            then filters MSIs on startTime <= startTimeMax.
+            
+            If startTimeMaxInclusive is false then filters MSIs
+            on startTime < startTimeMax.
+            
+            If startTimeMaxInclusive not specified then has no effect.
           schema:
             type: boolean
+            default: true
             example: true
         - in: query
           name: endTimeMin
-          description:
+          description: | 
+            If endTimeMinInclusive is true (the default value if not specified)
+            then filters MSIs on startTime >= startTimeMin.
+            
+            If startTimeMinInclusive is false then filters MSIs
+            on startTime > startTimeMin.
           schema:
             type: string
             format: datetime
             example: '2022-04-21T18:25:43.511Z'
         - in: query
           name: endTimeMinInclusive
-          description:
+          description: |
+            If endTimeMinInclusive is true (the default value if not specified)
+            then filters MSIs on endTime >= endTimeMin.
+            
+            If endTimeMinInclusive is false then filters MSIs
+            on endTime > endTimeMin.
+            
+            If endTimeMinInclusive not specified then has no effect.
           schema:
             type: boolean
             example: true 
         - in: query
           name: endTimeMax
-          description:
+          description: |
+            If endTimeMaxInclusive is true (the default value if not specified)
+            then filters MSIs on endTime <= endTimeMax.
+            
+            If endTimeMaxInclusive is false then filters MSIs
+            on endTime < endTimeMax.
           schema:
             type: string
             format: datetime
             example: '2022-04-25T14:18:23.000Z'
         - in: query
           name: endTimeMaxInclusive
-          description:
+          description: |
+            If endTimeMaxInclusive is true (the default value if not specified)
+            then filters MSIs on endTime <= endTimeMax.
+            
+            If endTimeMaxInclusive is false then filters MSIs
+            on endTime < endTimeMax.
+            
+            If endTimeMaxInclusive not specified then has no effect.
           schema:
             type: boolean
+            default: true
             example: true             
         - in: query
           name: limit
