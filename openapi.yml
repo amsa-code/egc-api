@@ -142,7 +142,7 @@ info:
     ### Additional Fields
     There are obvious use cases for the following additional fields on an MSI:
     
-    * createTime
+    * createdTime
     * cancelledTime
     
     TODO confirm
@@ -685,7 +685,7 @@ components:
               lon: 145.44
               radiusNm: 150
             priority: SAFETY
-        createTime:
+        createdTime:
           type: string
           format: datetime
           description: |
@@ -717,7 +717,7 @@ components:
         repetition:
           $ref: '#/components/schemas/Repetition'
       ## repetition is optional
-      required: [id, broadcast, createTime, startTime, endTime, status]
+      required: [id, broadcast, createdTime, startTime, endTime, status]
         
     SARBroadcast:
       type: object
