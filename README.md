@@ -8,6 +8,6 @@ The OpenAPI v3 definition for the EGC API is [openapi.yml](openapi.yml).
 
 Note that a number of design considerations are discussed in the opening description block of [openapi.yml](openapi.yml).
 
-Below is a visualization of the data model of an MSI broadcast.
+Below is a visualization of the data model of an MSI broadcast (as a [UML Class Diagram](https://en.wikipedia.org/wiki/Class_diagram).
 
 <img style="background-color:white" src="msi-class-diagram.svg"/>
