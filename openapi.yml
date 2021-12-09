@@ -286,10 +286,13 @@ paths:
             type: array
             items:
               $ref: '#/components/schemas/Status'
+            example:
+            - CREATED
+            - CANCELLED
         - in: query
-          name: msiType
+          name: broadcastType
           schema:
-            $ref: '#/components/schemas/MsiType' 
+            $ref: '#/components/schemas/BroadcastType' 
           description: TODO
         - in: query
           name: continuationToken
@@ -536,7 +539,7 @@ components:
       enum: [CREATED, SCHEDULED, ACTIVE, FINISHED, CANCELLED]
       example: ACTIVE
       
-    MsiType:
+    BroadcastType:
       type: string
       enum: [SARBroadcast, MetBroadcast, NavBroadcast]
       example: SARBroadcast
@@ -553,12 +556,14 @@ components:
       format: float
       minimum: -90
       maximum: 90
+      example: -45.5
       
     Longitude:
       type: number
       format: float
       minimum: -180
       maximum: 180
+      example: 145.44
       
     ExactTimeOrRange:
       oneOf:
@@ -575,6 +580,9 @@ components:
       example: '2022-04-23T18:25:43.511Z'
       
     TimeRange:
+      description: |
+        A time range with optional min or max. If neither are
+        present then represents all time.    
       type: object
       properties:
         min:
@@ -591,9 +599,7 @@ components:
           type: boolean
           description: |
             if not present then assumed true
-      description: |
-        A time range with optional min or max. If neither are
-        present then represents all time.
+
       
     Circle:
       type: object
