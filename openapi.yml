@@ -119,13 +119,9 @@ info:
     supplied. This is a security hole in that anyone in possession of one 
     valid token (but not the username and password) can stay authenticated 
     forever. In the same vein, a sensible limit on validity duration of a 
-    token should be imposed. Common practice for token refresh in REST 
-    services is to force a refresh every 15 minutes to an hour.
-    
-    Note that in the context of web applications the fact that the token
-    refresh is at 15 minutes does not preclude the web application being 
-    coded only require username and password entry by a user every 
-    N hours. 
+    token should be imposed so that a leaked token cannot be used for long. 
+    Common practice for token refresh in REST services is to force a refresh 
+    every 15 minutes to an hour. 
     
     Bearer authentication is used ([RFC6750](https://www.rfc-editor.org/rfc/rfc6750.html#page-5)).
     Bearer authentication is carried in the `Authorization` request header in this format:
