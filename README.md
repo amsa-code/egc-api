@@ -17,5 +17,6 @@ Below is a visualization of the data model of an MSI broadcast (as a [UML Class 
 Notes:
 * A SARBroadcast has zero or one SARBroadcastArea. When a SARBroadcastArea is not specified the whole coverage area is assumed.
 * An MSI has zero or one Repetition. When a Repetition is not specified then the broadcast happens only once (there may still be the standard 6 minute echo). 
+* An EGC satellite service provider should be able to map this model to C-Codes if desired (raise an issue if this is not the case)
 
 <img style="background-color:white" src="diagrams/msi-class-diagram.svg"/>
