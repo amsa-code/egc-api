@@ -298,14 +298,22 @@ paths:
             Describes to the server the starting point of 
             the next page of results and is obtained from 
             the current page. May contain an offset if desired
-            but is at the discretion of implementer.
+            but is at the discretion of implementer. Note that
+            it is possible that a call specifying a continuation
+            token may return en empty list (but an empty list return 
+            should not have a continuation token on it so at 
+            that point paging would stop).
         ## review other fields, acks etc.
       responses:
         '200':    
           description: OK
           content:
             application/json:
-              schema: 
+              schema:
+                description: |
+                  A list of MSIs and an optional continuation token (
+                  to retrieve the next page of MSIs). If the list of
+                  MSIs is empty there should be no continuation token. 
                 type: object
                 properties:
                   msis:
