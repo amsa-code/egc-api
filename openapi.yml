@@ -107,6 +107,7 @@ info:
     can be queried. 
     
     ### Abstraction of C-Codes
+    
     Initial proposals for the API suggested a partial abstraction of C-Codes. 
     In particular Priority, MsiType and AreaType were abstracted. This API 
     demonstrates a full abstraction of C-Codes. It is equivalent to C-Codes
@@ -120,6 +121,7 @@ info:
     abstraction)?
     
     ### Authentication
+    
     Initial proposals for this API included a re-authenticate 
     method whereby a new token was returned if a currently valid token was 
     supplied. This is a security hole in that anyone in possession of one 
@@ -130,9 +132,8 @@ info:
     
     Note that in the context of web applications the fact that the token
     refresh is at 15 minutes does not preclude the web application being 
-    coded to only require username and password entry by a user every 
-    N hours. It's just some additional coding that needs to happen to cache
-    the username and password locally for a period. 
+    coded only require username and password entry by a user every 
+    N hours. 
     
     ### Naming
     Previous API drafts used the field names `startDate` and `endDate` for an MSI.
@@ -199,7 +200,7 @@ paths:
         maximum number of unsent messages so it can be documented here). 
       requestBody:
         description: |
-          Describes the message content.
+          Describes the message content
         required: true
         content:
           application/json:
