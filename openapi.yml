@@ -302,7 +302,7 @@ paths:
           description: |
             Describes to the server the starting point of 
             the next page of results and is obtained from 
-            the current page. May contain an offset is desired
+            the current page. May contain an offset if desired
             but is at the discretion of implementer.
         ## review other fields, acks etc.
       responses:
@@ -758,6 +758,8 @@ components:
       - SPECIAL_SERVICES_X
       - SPECIAL_SERVICES_Y
       - NO_MESSAGES_ON_HAND
+      description: |
+        Subject indicator associated with a Coastal Warning
                     
     Repetition:
       type: object
@@ -771,9 +773,14 @@ components:
           type: integer
           enum: [1,2,3,4,5,6,12,18,24,30,36,48,60,72,96,120]  
           description: |
-            the time gap between broadcast repeats   
+            the time gap between broadcasts of the same MSI   
       required: [repeatTillCancelled, intervalHours] 
       
     ContinuationToken:
       type: string
       minLength: 1
+      maxLength: 4096
+      description: |
+        Indicates to the server the starting point of the next page 
+        of results. The token is not expected to be anywhere near as
+        long as 4096 characters but good to put an upper bound on it. 
