@@ -16,9 +16,8 @@ interface NonSARBroadcast
 class MetBroadcast {
   isForecast: boolean
 }
-class NavWarningBroadcast {
-  isPiracyWarning: boolean
-}
+class NavBroadcast 
+class PiracyBroadcast
 
 enum SARPriority {
   SAFETY
@@ -111,15 +110,15 @@ class Rectangle {
   widthDegrees: decimal
 }
 interface Geometry
-interface NavBroadcastArea
+interface NavOrPrivacyBroadcastArea
 interface MetBroadcastArea
 
 Geometry <|-- Circle
 Geometry <|-- Rectangle
 
-NavBroadcastArea <|-- NavArea
-NavBroadcastArea <|-- CoastalWarningArea
-NavBroadcastArea <|-- Geometry
+NavOrPrivacyBroadcastArea <|-- NavArea
+NavOrPrivacyBroadcastArea <|-- CoastalWarningArea
+NavOrPrivacyBroadcastArea <|-- Geometry
 
 MetBroadcastArea <|-- Geometry
 MetBroadcastArea <|-- CoastalWarningArea
@@ -131,11 +130,13 @@ SARBroadcastArea <|-- NavArea
 MSI <|-- SARBroadcast
 MSI <|-- NonSARBroadcast
 NonSARBroadcast <|-- MetBroadcast
-NonSARBroadcast <|-- NavWarningBroadcast
+NonSARBroadcast <|-- NavBroadcast
+NonSARBroadcast <|-- PiracyBroadcast
 
 SARBroadcast  -- "0..1" SARBroadcastArea
 MetBroadcast  -- "1" MetBroadcastArea
-NavWarningBroadcast  -- "1" NavBroadcastArea
+NavBroadcast  -- "1" NavOrPrivacyBroadcastArea
+PiracyBroadcast  -- "1" NavOrPrivacyBroadcastArea
 
 NonSARBroadcast -- "1" NonSARPriority
 SARBroadcast -- "1" SARPriority
