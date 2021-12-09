@@ -10,4 +10,4 @@ Note that a number of design considerations are discussed in the opening descrip
 
 Below is a visualization of the data model of an MSI broadcast (as a [UML Class Diagram](https://en.wikipedia.org/wiki/Class_diagram)).
 
-<img style="background-color:white" src="msi-class-diagram.svg"/>
+<img style="background-color:white" src="diagrams/msi-class-diagram.svg"/>
