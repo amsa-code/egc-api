@@ -127,6 +127,11 @@ info:
     coded only require username and password entry by a user every 
     N hours. 
     
+    Bearer authentication is used ([RFC6750](https://www.rfc-editor.org/rfc/rfc6750.html#page-5)).
+    Bearer authentication is carried in the `Authorization` request header in this format:
+    
+        Authorization: Bearer BASE64_ENCODED_TOKEN
+    
     ### Naming
     Previous API drafts used the field names `startDate` and `endDate` for an MSI.
     Given that those fields refer to timestamps not just dates the names `startTime`
@@ -213,7 +218,9 @@ paths:
           $ref: '#/components/responses/Forbidden'          
         '500':    
           $ref: '#/components/responses/ServerError'
-          
+      security: 
+      - bearer: []
+                
     ###############################################
     ## List MSIs
     ###############################################      
@@ -412,8 +419,11 @@ paths:
           $ref: '#/components/responses/Forbidden'          
         '500':    
           $ref: '#/components/responses/ServerError'
-          
+      security: 
+      - bearer: []
+                
   /msi/{id}:
+    
     parameters:
       - $ref: '#/components/parameters/MsiId'
     
@@ -439,6 +449,9 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':    
           $ref: '#/components/responses/ServerError'
+      security: 
+      - bearer: []
+      
 
     ###############################################
     ## Send an MSI
@@ -459,7 +472,9 @@ paths:
         '403': 
           $ref: '#/components/responses/Forbidden'          
         '500':    
-          $ref: '#/components/responses/ServerError'              
+          $ref: '#/components/responses/ServerError'
+      security: 
+      - bearer: []                        
 
     ###############################################
     ## Cancel an MSI
@@ -483,8 +498,15 @@ paths:
           $ref: '#/components/responses/Forbidden'          
         '500':    
           $ref: '#/components/responses/ServerError'       
-                                   
+      security: 
+      - bearer: []
+                                         
 components:
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+       
   parameters:
     MsiId:
       in: path
