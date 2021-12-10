@@ -110,7 +110,7 @@ info:
     API-consuming application that imposes compile-time checking (varies on language)
     instead of experiencing runtime failures.
     
-    **TODO** is there a requirement for full explicit C-Code support (zero 
+    TODO is there a requirement for full explicit C-Code support (zero 
     abstraction)?
     
     ### Authentication
