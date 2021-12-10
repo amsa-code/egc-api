@@ -763,7 +763,21 @@ components:
         payload: 
           $ref: '#/components/schemas/Payload'          
         repetition:
-          $ref: '#/components/schemas/Repetition' 
+          $ref: '#/components/schemas/Repetition'
+        readAcksEnabled:
+          description: |
+            If the satellite provider supports read acknowledgements then setting this 
+            field to true will enable acknowledgements to the satellite provider
+            that the message has been read by the receiving vessel.
+          type: boolean
+          example: false
+        receiveAcksEnabled:
+          description: |
+            If the satellite provider supports receive acknowledgements then setting this 
+            field to true will enable acknowledgements to the satellite provider
+            that the message has been received by the vessel.
+          type: boolean
+          example: false 
       ## repetition is optional
       required: [broadcast, payload]
         
@@ -826,6 +840,20 @@ components:
           $ref: '#/components/schemas/Status'   
         repetition:
           $ref: '#/components/schemas/Repetition'
+        readAcksEnabled:
+          description: |
+            If the satellite provider supports read acknowledgements then setting this 
+            field to true will enable acknowledgements to the satellite provider
+            that the message has been read by the receiving vessel.
+          type: boolean
+          example: false
+        receiveAcksEnabled:
+          description: |
+            If the satellite provider supports receive acknowledgements then setting this 
+            field to true will enable acknowledgements to the satellite provider
+            that the message has been received by the vessel.
+          type: boolean
+          example: false 
       ## repetition is optional
       required: [id, broadcast, createdTime, startTime, endTime, status]
         
