@@ -110,7 +110,7 @@ info:
     API-consuming application that imposes compile-time checking (varies on language)
     instead of experiencing runtime failures.
     
-    TODO is there a requirement for full explicit C-Code support (zero 
+    **TODO** is there a requirement for full explicit C-Code support (zero 
     abstraction)?
     
     ### Auth
@@ -134,13 +134,28 @@ info:
     Given that those fields refer to timestamps not just dates the names `startTime`
     and `endTime` have been used.
     
-    ### Additional Fields
-    There are obvious use cases for the following additional fields on an MSI:
+    ### Acknowledgments
+    Iridium can at times provide receive and read acknowledgements. **TODO** get 
+    better documentation of the capability and a proper specification for their
+    response from a list acks call.
+    
+    ### Timings
+    There may be use cases for the following additional fields on an MSI:
     
     * createdTime
     * cancelledTime
     
-    TODO confirm
+    A user could record in their own systems when they created or cancelled a broadcast 
+    but it might help problem diagnosis if that information was together.
+    
+    **TODO** confirm
+    
+    It would also be useful in some circumstances for users to know exactly when a
+    message was broadcast by satellite. Although messages may be scheduled for 
+    immediate or later broadcast there may be significant delays till the broadcast
+    occurs and the user should be able to see the actual broadcast times.
+    
+    **TODO** discuss with satellite providers
     
 paths:
 
