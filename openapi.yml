@@ -113,7 +113,7 @@ info:
     TODO is there a requirement for full explicit C-Code support (zero 
     abstraction)?
     
-    ### Authentication
+    ### Auth
     
     Initial proposals for this API included a re-authenticate 
     method whereby a new token was returned if a currently valid token was 
