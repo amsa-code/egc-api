@@ -253,7 +253,7 @@ paths:
         may vary in repeated calls (for example, the returned MSIs *may* 
         not be ordered by timestamp). If the client requires an ordering
         by time then all pages should be requested and then sorted 
-        client-side. TODO confirm expectations
+        client-side. **TODO** confirm expectations
       parameters:
         - in: query
           name: startTimeMin
@@ -377,7 +377,7 @@ paths:
             Only MSIs that have a status in the given list
             are returned. If the list is empty (or the parameter
             is not present) then no filtering on status occurs.
-            TODO support multi-status filtering or just one?
+            **TODO** support multi-status filtering or just one?
           schema:
             type: array
             items:
@@ -658,7 +658,8 @@ components:
       example: SARBroadcast
       
     Payload:
-      description: the ASCII message text to broadcast
+      description: ||
+        the ASCII message text to broadcast. **TODO** what max length is appropriate?
       type: string
       minLength: 1
       maxLength: 65535 ## TODO what max length is appropriate?
