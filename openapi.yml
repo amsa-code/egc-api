@@ -44,13 +44,14 @@ info:
     error) has scalability/availability consequences for the 
     server side because a transactional resource must be used
     (like a relational database) that can ensure single use of any 
-    msiId. If the server creates the msiId and communicates it to
-    the client then the server side can potentially be scaled with
-    ease if the msiID is a UUID for instance (which is effectively 
-    unique without coordination with other nodes).
+    msiId. If instead the server creates the msiId and communicates 
+    it to the client then the server side can potentially be scaled
+    with ease if the msiID is a [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier) 
+    for instance (which is effectively unique without coordination
+    with other nodes).
     
-    Note also that to support two-phase send an additional status
-    value has been added, `CREATED`.
+    Note also that to support two-phase send the status value of
+     `CREATED` is included.
     
     ### Pagination
     
@@ -502,6 +503,8 @@ components:
     bearer:
       type: http
       scheme: bearer
+      description: |
+        As per RFC6750: `Authorization: Bearer BASE_64_ENCODED_TOKEN`
        
   parameters:
     MsiId:
