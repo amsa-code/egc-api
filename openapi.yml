@@ -659,7 +659,7 @@ components:
       example: SARBroadcast
       
     Payload:
-      description: ||
+      description: |
         the ASCII message text to broadcast. **TODO** what max length is appropriate?
       type: string
       minLength: 1
