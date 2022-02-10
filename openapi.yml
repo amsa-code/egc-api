@@ -130,6 +130,10 @@ info:
     
         Authorization: Bearer BASE64_ENCODED_TOKEN
     
+    TODO The encoded content of the token is not defined (for example, JWT could be used)
+    but is left to the implementer. Should the authentication flow follow an existing 
+    standard like OAuth 2.0? 
+    
     ### Naming
     Previous API drafts used the field names `startDate` and `endDate` for an MSI.
     Given that those fields refer to timestamps not just dates the names `startTime`
