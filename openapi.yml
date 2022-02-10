@@ -40,15 +40,37 @@ info:
     unique id (using a UUID for instance) is a possible solution 
     but is less desirable because it introduces a problematic 
     edge case where the client accidentally uses the same id more
-    than once. To detect this synchronously (to throw an immediate
-    error) has scalability/availability consequences for the 
-    server side because a transactional resource must be used
-    (like a relational database) that can ensure single use of any 
-    msiId. If instead the server creates the msiId and communicates 
+    than once. If two different messages are sent with the same id
+    (concurrently even) then the service should ensure that only 
+    one message is accepted and that the service consumer is aware 
+    that the other message failed. To do this demands coordination
+    with a single transactional resource (like a relational database) which 
+    also demands that that resource is highly available (relational 
+    databases are often not great at that during upgrade cycles). There 
+    are ways to get high availability (highly available cloud services like 
+    DynamoDB and many more can offer conditional updates) but there is
+    a much simpler way with two-phase. 
+    
+    If instead of the one-phase call the server creates the msiId and communicates 
     it to the client then the server side can potentially be scaled
     with ease if the msiID is a [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier) 
     for instance (which is effectively unique without coordination
-    with other nodes).
+    with other nodes). 
+    
+    For example, a highly available and scalable 
+    service could be constructed in AWS cloud using API Gateway with
+    Lambda integrations that for the create message and send actions
+    does this
+    
+      * **Create:** Generate a new UUID, place the message content and UUID on 
+    to a queue for processing , return the UUID
+      * **Send:** Place the UUID parameter on to a queue for processing
+    
+    A separate component then actions items on the queue(s). When both 
+    the send and create messages have been read then an actual send can take 
+    place. What is clear from this design is that many concurrent nodes could
+    be receiving messages without coordinating with a central node/service 
+    to ensure id uniqueness.
     
     Note also that to support two-phase send the status value of
      `CREATED` is included.
