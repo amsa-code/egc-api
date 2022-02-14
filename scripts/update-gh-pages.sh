@@ -1,6 +1,5 @@
 #!/bin/bash
 set -e
-set -x
 ./create-docs.sh
 cp ../target/index.html /tmp
 git checkout gh-pages
