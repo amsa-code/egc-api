@@ -7,5 +7,5 @@ git checkout gh-pages
 cp /tmp/index.html ..
 git add ..
 git commit -am "update index.html"
-git push
+git push -u origin gh-pages
 git checkout master
