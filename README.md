@@ -6,6 +6,8 @@ The defacto standard for the definition of REST APIs is [OpenAPI v3](https://swa
 
 The OpenAPI v3 definition for the EGC API is [openapi.yml](openapi.yml). 
 
+Documentation generated from openapi.yml is [here](https://amsa-code.github.io/egc-api/) (and is updated using `scripts/update-gh-pages.sh`). 
+
 Note that a number of design considerations are discussed in the opening description block of [openapi.yml](openapi.yml).
 
 A useful tool for editing and visualizing the API in HTML documentation is at https://editor.swagger.io/.
