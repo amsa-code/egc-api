@@ -1,6 +1,6 @@
 # Enhanced Group Call (EGC) API
 
-This repository is a collaboration point to support the development of a common and fully-defined REST API to be implemented by EGC satellite service providers (currently Inmarsat and Iridium). 
+This repository is a collaboration point to support the development of a common and fully-defined REST API to be implemented by EGC satellite service providers (currently Inmarsat and Iridium) and used by Maritime Safety Information (MSI) providers throughout the world. 
 
 The defacto standard for the definition of REST APIs is [OpenAPI v3](https://swagger.io/specification/) which is a YAML or JSON document. The YAML and JSON representations are equivalent, this site uses YAML format for its readability advantages.
 
